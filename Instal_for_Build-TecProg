@@ -1,0 +1,40 @@
+Instalar o PYGAME
+
+sudo apt-get install python-pygame
+
+Instalar o Pip
+
+sudo apt-get install python-pip
+
+* Se precisar atualizar o pip: pip install --upgrade pip
+
+Instalar o PyOpenGL
+
+pip install --user PyOpenGL PyOpenGL_accelerate
+
+Instalar Python Imaging Library
+
+pip install --user Pillow
+
+sudo apt-get install python-dev libjpeg-dev libfreetype6-dev zlib1g-dev
+
+sudo apt-get install python-imaging
+
+
+Installar o NumPY
+
+sudo apt-get install python-numpy
+
+-----------------------
+
+Caso ocorra algum problema em importar OpenGL.GL instale:
+
+sudo apt-get install python python-numpy python-opengl python-qt4 python-qt4-gl
+
+-----------------------
+
+Pra rodar o programa:
+
+.../fretsonfire/src
+
+python FretsOnFire.py
