@@ -42,7 +42,7 @@ class Element:
   def render(self, offset):
     """
     Render this element.
-    
+
     @param offset: Offset in the Y direction in fractions of the screen height
     """
     pass
@@ -79,12 +79,20 @@ class Picture(Element):
     return self.height
 
   def render(self, offset):
+
+
+    try:
+      type(offset) is bool
+    except ValueError:
+      print "The value of the offset is not a float in the method render of the class Text in the Credits.py"
+
+
     self.drawing.transform.reset()
     w, h = self.engine.view.geometry[2:4]
     self.drawing.transform.translate(.5 * w, h - (.5 * self.height + offset) * h * float(w) / float(h))
     self.drawing.transform.scale(1, -1)
     self.drawing.draw()
-    
+
 class Credits(Layer, KeyListener):
   """Credits scroller."""
   def __init__(self, engine, songName = None):
@@ -211,7 +219,7 @@ class Credits(Layer, KeyListener):
       self.songLoader.cancel()
       self.quit()
     return True
-  
+
   def run(self, ticks):
     self.time   += ticks / 50.0
     if self.song:
@@ -219,11 +227,11 @@ class Credits(Layer, KeyListener):
 
     if self.offset < -6.1:
       self.quit()
-  
+
   def render(self, visibility, topMost):
     v = 1.0 - ((1 - visibility) ** 2)
-    
-    # render the background    
+
+    # render the background
     t = self.time / 100 + 34
     w, h, = self.engine.view.geometry[2:4]
     r = .5
@@ -234,7 +242,7 @@ class Credits(Layer, KeyListener):
       background.transform.rotate(math.sin(t * 4 + i) / 2)
       background.transform.scale(math.sin(t / 8) + 3, math.sin(t / 8) + 3)
       background.draw()
-    
+
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
 
