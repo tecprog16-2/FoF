@@ -83,10 +83,7 @@ def fadeScreen(v):
 
   @param v: Visibility factor [0..1], 0 is fully visible
   """
-  try:
-    type(v) is float
-  except ValueError:
-    print "In the fadeScreend method of the Dialogs.py file the visibility_tax is not a float"
+  assert type(v) == float, "In the fadeScreend method of the Dialogs.py file the visibility_tax is not a float"
 
   glEnable(GL_BLEND)
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
