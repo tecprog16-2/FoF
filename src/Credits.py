@@ -80,16 +80,20 @@ class Picture(Element):
 
   def render(self, offset):
 
-
-    try:
-      type(offset) is bool
-    except ValueError:
-      print "The value of the offset is not a float in the method render of the class Text in the Credits.py"
-
-
     self.drawing.transform.reset()
-    w, h = self.engine.view.geometry[2:4]
-    self.drawing.transform.translate(.5 * w, h - (.5 * self.height + offset) * h * float(w) / float(h))
+
+    for_midle = .5
+    width, height = self.engine.view.geometry[2:4]
+    float_width = float(width)
+    float_height = float(height)
+    height_tax_object = for_midle * self.height + offset
+    final_render_width = for_midle * width
+    final_render_height = height - height_tax_object * height * float_width
+    final_render_height = final_render_height / float_height
+
+
+
+    self.drawing.transform.translate(final_render_width, final_render_height)
     self.drawing.transform.scale(1, -1)
     self.drawing.draw()
 
