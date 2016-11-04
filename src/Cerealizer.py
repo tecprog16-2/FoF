@@ -193,6 +193,7 @@ Writes a reference to OBJ in file S."""
 
 Reads a reference from file S."""
     c = s.read(1)
+    assert c is not None
     if   c == "i": return int  (s.readline())
     elif c == "f": return float(s.readline())
     elif c == "s": return s.read(int(s.readline()))
