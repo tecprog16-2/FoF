@@ -46,7 +46,7 @@ import Guitar
 def wrapText(font, pos, text, rightMargin = 0.9, scale = 0.002, visibility = 0.0, hide = 0, hidestring = ""):
   """
   Wrap a piece of text inside given margins.
-  
+
   @param pos:         (x, y) tuple, x defines the left margin
   @param text:        Text to wrap
   @param rightMargin: Right margin
@@ -80,9 +80,11 @@ def wrapText(font, pos, text, rightMargin = 0.9, scale = 0.002, visibility = 0.0
 def fadeScreen(v):
   """
   Fade the screen to a dark color to make whatever is on top easier to read.
-  
+
   @param v: Visibility factor [0..1], 0 is fully visible
   """
+  assert type(v) == float, "In the fadeScreend method of the Dialogs.py file the visibility_tax is not a float"
+
   glEnable(GL_BLEND)
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
   glEnable(GL_COLOR_MATERIAL)
@@ -97,7 +99,7 @@ def fadeScreen(v):
   glColor4f(0, 0, 0, .9 - v * .9)
   glVertex2f(1, 1)
   glEnd()
-  
+
 
 class GetText(Layer, KeyListener):
   """Text input layer."""
@@ -107,15 +109,15 @@ class GetText(Layer, KeyListener):
     self.engine = engine
     self.time = 0
     self.accepted = False
-    
+
   def shown(self):
     self.engine.input.addKeyListener(self, priority = True)
     self.engine.input.enableKeyRepeat()
-    
+
   def hidden(self):
     self.engine.input.removeKeyListener(self)
     self.engine.input.disableKeyRepeat()
-    
+
   def keyPressed(self, key, unicode):
     self.time = 0
     c = self.engine.input.controls.getMapping(key)
@@ -131,17 +133,17 @@ class GetText(Layer, KeyListener):
     elif unicode and ord(unicode) > 31 and not self.accepted:
       self.text += str(unicode)
     return True
-    
+
   def run(self, ticks):
     self.time += ticks / 50.0
-  
+
   def render(self, visibility, topMost):
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
-    
+
     try:
       v = (1 - visibility) ** 2
-      
+
       fadeScreen(v)
       Theme.setBaseColor(1 - v)
 
@@ -153,11 +155,11 @@ class GetText(Layer, KeyListener):
       pos = wrapText(font, (.1, .33 - v), self.prompt)
 
       Theme.setSelectedColor(1 - v)
-      
+
       if self.text is not None:
         pos = wrapText(font, (.1, (pos[1] + v) + .08 + v / 4), self.text)
         font.render(cursor, pos)
-      
+
     finally:
       self.engine.view.resetProjection()
 
@@ -169,13 +171,13 @@ class GetKey(Layer, KeyListener):
     self.engine = engine
     self.time = 0
     self.accepted = False
-    
+
   def shown(self):
     self.engine.input.addKeyListener(self, priority = True)
-    
+
   def hidden(self):
     self.engine.input.removeKeyListener(self)
-    
+
   def keyPressed(self, key, unicode):
     c = self.engine.input.controls.getMapping(key)
     if c in [Player.CANCEL, Player.KEY2] and not self.accepted:
@@ -187,17 +189,17 @@ class GetKey(Layer, KeyListener):
       self.engine.view.popLayer(self)
       self.accepted = True
     return True
-    
+
   def run(self, ticks):
     self.time += ticks / 50.0
-  
+
   def render(self, visibility, topMost):
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
-    
+
     try:
       v = (1 - visibility) ** 2
-      
+
       fadeScreen(v)
       Theme.setBaseColor(1 - v)
 
@@ -208,7 +210,7 @@ class GetKey(Layer, KeyListener):
       if self.key is not None:
         text = pygame.key.name(self.key).capitalize()
         pos = wrapText(font, (.1, (pos[1] + v) + .08 + v / 4), text)
-      
+
     finally:
       self.engine.view.resetProjection()
 
@@ -230,7 +232,7 @@ class LoadingScreen(Layer, KeyListener):
     if self.allowCancel and c == Player.CANCEL:
       self.engine.view.popLayer(self)
     return True
-    
+
   def hidden(self):
     self.engine.boostBackgroundThreads(False)
     self.engine.input.removeKeyListener(self)
@@ -240,7 +242,7 @@ class LoadingScreen(Layer, KeyListener):
     if not self.ready and self.condition():
       self.engine.view.popLayer(self)
       self.ready = True
-  
+
   def render(self, visibility, topMost):
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
@@ -252,7 +254,7 @@ class LoadingScreen(Layer, KeyListener):
       self.engine.boostBackgroundThreads(True)
     else:
       self.engine.boostBackgroundThreads(False)
-    
+
     try:
       v = (1 - visibility) ** 2
       fadeScreen(v)
@@ -267,9 +269,9 @@ class LoadingScreen(Layer, KeyListener):
       w, h = font.getStringSize(self.text)
       x = .5 - w / 2
       y = .6 - h / 2 + v * .5
-      
+
       font.render(self.text, (x, y))
-      
+
     finally:
       self.engine.view.resetProjection()
 
@@ -289,20 +291,20 @@ class MessageScreen(Layer, KeyListener):
     if c in [Player.KEY1, Player.KEY2, Player.CANCEL] or key == pygame.K_RETURN:
       self.engine.view.popLayer(self)
     return True
-    
+
   def hidden(self):
     self.engine.input.removeKeyListener(self)
 
   def run(self, ticks):
     self.time += ticks / 50.0
-  
+
   def render(self, visibility, topMost):
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
 
     if not font:
       return
-    
+
     try:
       v = (1 - visibility) ** 2
       fadeScreen(v)
@@ -317,10 +319,10 @@ class MessageScreen(Layer, KeyListener):
       y = pos[1] + 3 * h + v * 2
       Theme.setSelectedColor(1 - v)
       font.render(self.prompt, (x, y), scale = 0.001)
-      
+
     finally:
       self.engine.view.resetProjection()
-      
+
 class SongChooser(Layer, KeyListener):
   """Song choosing layer."""
   def __init__(self, engine, prompt = "", selectedSong = None, selectedLibrary = None):
@@ -359,7 +361,7 @@ class SongChooser(Layer, KeyListener):
     self.engine.resource.load(self, "label",        lambda: Mesh(self.engine.resource.fileName("label.dae")), synch = True)
     self.engine.resource.load(self, "libraryMesh",  lambda: Mesh(self.engine.resource.fileName("library.dae")), synch = True)
     self.engine.resource.load(self, "libraryLabel", lambda: Mesh(self.engine.resource.fileName("library_label.dae")), synch = True)
-    
+
     self.engine.loadSvgDrawing(self, "background", "cassette.svg")
 
   def loadCollection(self):
@@ -392,11 +394,11 @@ class SongChooser(Layer, KeyListener):
       if isinstance(item, Song.LibraryInfo):
         self.loadItemLabel(i)
     self.updateSelection()
-    
+
   def shown(self):
     self.engine.input.addKeyListener(self, priority = True)
     self.engine.input.enableKeyRepeat()
-    
+
   def hidden(self):
     if self.songLoader:
       self.songLoader.cancel()
@@ -405,7 +407,7 @@ class SongChooser(Layer, KeyListener):
       self.song = None
     self.engine.input.removeKeyListener(self)
     self.engine.input.disableKeyRepeat()
-    
+
   def getSelectedSong(self):
     if isinstance(self.selectedItem, Song.SongInfo):
       return self.selectedItem.songName
@@ -429,7 +431,7 @@ class SongChooser(Layer, KeyListener):
     self.selectedItem  = self.items[self.selectedIndex]
     self.songCountdown = 1024
     self.loadItemLabel(self.selectedIndex)
-    
+
   def keyPressed(self, key, unicode):
     if not self.items or self.accepted:
       return
@@ -529,7 +531,7 @@ class SongChooser(Layer, KeyListener):
   def doSearch(self):
     if not self.searchText:
       return
-      
+
     for i, item in enumerate(self.items):
       if self.matchesSearch(item):
           self.selectedIndex =  i
@@ -541,7 +543,7 @@ class SongChooser(Layer, KeyListener):
 
     if self.song:
       self.song.stop()
-    
+
     song.setGuitarVolume(self.engine.config.get("audio", "guitarvol"))
     song.setBackgroundVolume(self.engine.config.get("audio", "songvol"))
     song.setRhythmVolume(self.engine.config.get("audio", "rhythmvol"))
@@ -552,7 +554,7 @@ class SongChooser(Layer, KeyListener):
     song = self.getSelectedSong()
     if not song or (not self.autoPreview and not forceplay):
       return
-    
+
     if self.songLoader:
       self.songLoader.cancel()
       # Don't start a new song loader until the previous one is finished
@@ -568,7 +570,7 @@ class SongChooser(Layer, KeyListener):
     self.songLoader = self.engine.resource.load(self, None, lambda: Song.loadSong(self.engine, song, playbackOnly = True, library = self.library),
                                                 onLoad = self.songLoaded)
     self.playSongName = self.getSelectedSong()
-    
+
   def run(self, ticks):
     self.time += ticks / 50.0
 
@@ -579,13 +581,13 @@ class SongChooser(Layer, KeyListener):
 
     d = self.cameraOffset - self.selectedOffset
     self.cameraOffset -= d * ticks / 192.0
-    
+
     for i in range(len(self.itemAngles)):
       if i == self.selectedIndex:
         self.itemAngles[i] = min(90, self.itemAngles[i] + ticks / 2.0)
       else:
         self.itemAngles[i] = max(0,  self.itemAngles[i] - ticks / 2.0)
-    
+
   def renderCassette(self, color, label):
     if not self.cassette:
       return
@@ -613,7 +615,7 @@ class SongChooser(Layer, KeyListener):
       glLoadIdentity()
       glMatrixMode(GL_MODELVIEW)
       glDisable(GL_TEXTURE_2D)
-  
+
   def renderLibrary(self, color, label):
     if not self.libraryMesh:
       return
@@ -641,7 +643,7 @@ class SongChooser(Layer, KeyListener):
       glMatrixMode(GL_MODELVIEW)
       glDisable(GL_TEXTURE_2D)
     glDisable(GL_NORMALIZE)
-  
+
   def render(self, visibility, topMost):
     v = (1 - visibility) ** 2
 
@@ -654,7 +656,7 @@ class SongChooser(Layer, KeyListener):
     self.background.transform.rotate(-t)
     self.background.transform.scale(math.sin(t / 8) + 2, math.sin(t / 8) + 2)
     self.background.draw()
-      
+
     x = .6
     y = .15
 
@@ -667,28 +669,28 @@ class SongChooser(Layer, KeyListener):
         gluPerspective(60, self.engine.view.aspectRatio, 0.1, 1000)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-      
+
         glEnable(GL_DEPTH_TEST)
         glDisable(GL_CULL_FACE)
         glDepthMask(1)
-      
+
         offset = 10 * (v ** 2)
         self.camera.origin = (-10 + offset, -self.cameraOffset, 4   + offset)
         self.camera.target = (  0 + offset, -self.cameraOffset, 2.5 + offset)
         self.camera.apply()
-      
+
         y = 0.0
         for i, item in enumerate(self.items):
           if not self.matchesSearch(item):
             continue
-        
+
           c = math.sin(self.itemAngles[i] * math.pi / 180)
-        
+
           if isinstance(item, Song.SongInfo):
             h = c * self.cassetteWidth + (1 - c) * self.cassetteHeight
           else:
             h = c * self.libraryWidth + (1 - c) * self.libraryHeight
-        
+
           d = (y + h * .5 + self.camera.origin[1]) / (4 * (self.camera.target[2] - self.camera.origin[2]))
 
           if i == self.selectedIndex:
@@ -696,9 +698,9 @@ class SongChooser(Layer, KeyListener):
             Theme.setSelectedColor()
           else:
             Theme.setBaseColor()
-          
+
           glTranslatef(0, -h / 2, 0)
-        
+
           glPushMatrix()
           if abs(d) < 1.2:
             if isinstance(item, Song.SongInfo):
@@ -710,14 +712,14 @@ class SongChooser(Layer, KeyListener):
                 glRotate(self.time * 4, 1, 0, 0)
               self.renderLibrary(item.color, self.itemLabels[i])
           glPopMatrix()
-        
+
           glTranslatef(0, -h / 2, 0)
           y += h
 
         glDisable(GL_DEPTH_TEST)
         glDisable(GL_CULL_FACE)
         glDepthMask(0)
-      
+
       finally:
         glMatrixMode(GL_PROJECTION)
         glPopMatrix()
@@ -725,7 +727,7 @@ class SongChooser(Layer, KeyListener):
     else:
       self.engine.view.setOrthogonalProjection(normalize = True)
       font = self.engine.data.font
-    
+
       try:
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -831,7 +833,7 @@ class SongChooser(Layer, KeyListener):
       font.render(self.prompt, (x, .05 - v))
 
       Theme.setSelectedColor(1 - v)
-      
+
       item  = self.items[self.selectedIndex]
 
       if self.matchesSearch(item):
@@ -850,7 +852,7 @@ class SongChooser(Layer, KeyListener):
           y = .5 + f / 2.0
           if len(item.difficulties) > 3:
             y = .42 + f / 2.0
-            
+
           for d in item.difficulties:
             scores = item.getHighscores(d)
             if scores:
@@ -931,7 +933,7 @@ class FileChooser(BackgroundLayer, KeyListener):
     self.engine.view.popLayer(self.menu)
     self.engine.view.popLayer(self)
     self.menu = None
-    
+
   def cancel(self):
     self.accepted = True
     self.engine.view.popLayer(self)
@@ -940,20 +942,20 @@ class FileChooser(BackgroundLayer, KeyListener):
     if not self.menu:
       self.accepted = True
       self.engine.view.popLayer(self)
-    
+
   def shown(self):
     self.updateFiles()
-    
+
   def getSelectedFile(self):
     return self.selectedFile
-  
+
   def run(self, ticks):
     self.time += ticks / 50.0
-    
+
   def render(self, visibility, topMost):
     v = (1 - visibility) ** 2
 
-    # render the background    
+    # render the background
     t = self.time / 100
     w, h, = self.engine.view.geometry[2:4]
     r = .5
@@ -962,10 +964,10 @@ class FileChooser(BackgroundLayer, KeyListener):
     self.background.transform.rotate(-t)
     self.background.transform.scale(math.sin(t / 8) + 2, math.sin(t / 8) + 2)
     self.background.draw()
-      
+
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
-    
+
     try:
       glEnable(GL_BLEND)
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -987,18 +989,18 @@ class ItemChooser(BackgroundLayer, KeyListener):
     if selected and selected in items:
       self.menu.selectItem(items.index(selected))
     self.engine.loadSvgDrawing(self, "background", "editor.svg")
-    
+
   def _callbackForItem(self, item):
     def cb():
       self.chooseItem(item)
     return cb
-    
+
   def chooseItem(self, item):
     self.selectedItem = item
     accepted = True
     self.engine.view.popLayer(self.menu)
     self.engine.view.popLayer(self)
-    
+
   def cancel(self):
     self.accepted = True
     self.engine.view.popLayer(self)
@@ -1006,20 +1008,20 @@ class ItemChooser(BackgroundLayer, KeyListener):
   def close(self):
     self.accepted = True
     self.engine.view.popLayer(self)
-    
+
   def shown(self):
     self.engine.view.pushLayer(self.menu)
-    
+
   def getSelectedItem(self):
     return self.selectedItem
-  
+
   def run(self, ticks):
     self.time += ticks / 50.0
-    
+
   def render(self, visibility, topMost):
     v = (1 - visibility) ** 2
 
-    # render the background    
+    # render the background
     t = self.time / 100
     w, h, = self.engine.view.geometry[2:4]
     r = .5
@@ -1028,10 +1030,10 @@ class ItemChooser(BackgroundLayer, KeyListener):
     self.background.transform.rotate(-t)
     self.background.transform.scale(math.sin(t / 8) + 2, math.sin(t / 8) + 2)
     self.background.draw()
-      
+
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
-    
+
     try:
       glEnable(GL_BLEND)
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -1040,8 +1042,8 @@ class ItemChooser(BackgroundLayer, KeyListener):
       wrapText(font, (.1, .05 - v), self.prompt)
     finally:
       self.engine.view.resetProjection()
-      
-      
+
+
 class BpmEstimator(Layer, KeyListener):
   """Beats per minute value estimation layer."""
   def __init__(self, engine, song, prompt = ""):
@@ -1052,19 +1054,19 @@ class BpmEstimator(Layer, KeyListener):
     self.bpm            = None
     self.time           = 0.0
     self.beats          = []
-    
+
   def shown(self):
     self.engine.input.addKeyListener(self, priority = True)
     self.song.play()
-  
+
   def hidden(self):
     self.engine.input.removeKeyListener(self)
     self.song.fadeout(1000)
-    
+
   def keyPressed(self, key, unicode):
     if self.accepted:
       return True
-      
+
     c = self.engine.input.controls.getMapping(key)
     if key == pygame.K_SPACE:
       self.beats.append(self.time)
@@ -1079,33 +1081,33 @@ class BpmEstimator(Layer, KeyListener):
     elif c in [Player.KEY1] or key == pygame.K_RETURN:
       self.engine.view.popLayer(self)
       self.accepted = True
-      
+
     return True
-  
+
   def run(self, ticks):
     self.time += ticks
-    
+
   def render(self, visibility, topMost):
     v = (1 - visibility) ** 2
 
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
-    
+
     fadeScreen(v)
-          
+
     try:
       glEnable(GL_BLEND)
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
       glEnable(GL_COLOR_MATERIAL)
       Theme.setBaseColor(1 - v)
       wrapText(font, (.1, .2 - v), self.prompt)
-      
+
       if self.bpm is not None:
         Theme.setSelectedColor(1 - v)
         wrapText(font, (.1, .5 + v),  _("%.2f beats per minute") % (self.bpm))
     finally:
       self.engine.view.resetProjection()
-      
+
 class KeyTester(Layer, KeyListener):
   """Keyboard configuration testing layer."""
   def __init__(self, engine, prompt = ""):
@@ -1115,13 +1117,13 @@ class KeyTester(Layer, KeyListener):
     self.time           = 0.0
     self.controls       = Player.Controls()
     self.fretColors     = Theme.fretColors
-    
+
   def shown(self):
     self.engine.input.addKeyListener(self, priority = True)
-  
+
   def hidden(self):
     self.engine.input.removeKeyListener(self)
-    
+
   def keyPressed(self, key, unicode):
     if self.accepted:
       return True
@@ -1135,18 +1137,18 @@ class KeyTester(Layer, KeyListener):
 
   def keyReleased(self, key):
     self.controls.keyReleased(key)
-  
+
   def run(self, ticks):
     self.time += ticks
-    
+
   def render(self, visibility, topMost):
     v = (1 - visibility) ** 2
 
     self.engine.view.setOrthogonalProjection(normalize = True)
     font = self.engine.data.font
-    
+
     fadeScreen(v)
-          
+
     try:
       glEnable(GL_BLEND)
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -1167,15 +1169,15 @@ class KeyTester(Layer, KeyListener):
       else:
         glColor3f(.4, .4, .4)
       font.render(_("Pick!"), (.45, .5 + v))
-        
+
     finally:
       self.engine.view.resetProjection()
-      
+
 def _runDialog(engine, dialog):
   """Run a dialog in a sub event loop until it is finished."""
   if not engine.running:
     return
-  
+
   engine.view.pushLayer(dialog)
 
   while engine.running and dialog in engine.view.layers:
@@ -1184,7 +1186,7 @@ def _runDialog(engine, dialog):
 def getText(engine, prompt, text = ""):
   """
   Get a string of text from the user.
-  
+
   @param engine:  Game engine
   @param prompt:  Prompt shown to the user
   @param text:    Default text
@@ -1196,7 +1198,7 @@ def getText(engine, prompt, text = ""):
 def getKey(engine, prompt, key = None):
   """
   Ask the user to choose a key.
-  
+
   @param engine:  Game engine
   @param prompt:  Prompt shown to the user
   @param key:     Default key
@@ -1208,7 +1210,7 @@ def getKey(engine, prompt, key = None):
 def chooseSong(engine, prompt = _("Choose a Song"), selectedSong = None, selectedLibrary = None):
   """
   Ask the user to select a song.
-  
+
   @param engine:           Game engine
   @param prompt:           Prompt shown to the user
   @param selectedSong:     Name of song to select initially
@@ -1219,11 +1221,11 @@ def chooseSong(engine, prompt = _("Choose a Song"), selectedSong = None, selecte
   d = SongChooser(engine, prompt, selectedLibrary = selectedLibrary, selectedSong = selectedSong)
   _runDialog(engine, d)
   return (d.getSelectedLibrary(), d.getSelectedSong())
-  
+
 def chooseFile(engine, masks = ["*.*"], path = ".", prompt = _("Choose a File")):
   """
   Ask the user to select a file.
-  
+
   @param engine:  Game engine
   @param masks:   List of glob masks for files that are acceptable
   @param path:    Initial path
@@ -1232,11 +1234,11 @@ def chooseFile(engine, masks = ["*.*"], path = ".", prompt = _("Choose a File"))
   d = FileChooser(engine, masks, path, prompt)
   _runDialog(engine, d)
   return d.getSelectedFile()
-  
+
 def chooseItem(engine, items, prompt, selected = None):
   """
   Ask the user to one item from a list.
-  
+
   @param engine:    Game engine
   @param items:     List of items
   @param prompt:    Prompt shown to the user
@@ -1245,21 +1247,21 @@ def chooseItem(engine, items, prompt, selected = None):
   d = ItemChooser(engine, items, prompt = prompt, selected = selected)
   _runDialog(engine, d)
   return d.getSelectedItem()
-  
+
 def testKeys(engine, prompt = _("Play with the keys and press Escape when you're done.")):
   """
   Have the user test the current keyboard configuration.
-  
+
   @param engine:  Game engine
   @param prompt:  Prompt shown to the user
   """
   d = KeyTester(engine, prompt = prompt)
   _runDialog(engine, d)
-  
+
 def showLoadingScreen(engine, condition, text = _("Loading..."), allowCancel = False):
   """
   Show a loading screen until a condition is met.
-  
+
   @param engine:      Game engine
   @param condition:   A function that will be polled until it returns a true value
   @param text:        Text shown to the user
@@ -1267,7 +1269,7 @@ def showLoadingScreen(engine, condition, text = _("Loading..."), allowCancel = F
   @param allowCancel: Can the loading be canceled
   @return:            True if the condition was met, Fales if the loading was canceled.
   """
-  
+
   # poll the condition first for some time
   n = 0
   while n < 32:
@@ -1283,7 +1285,7 @@ def showLoadingScreen(engine, condition, text = _("Loading..."), allowCancel = F
 def showMessage(engine, text):
   """
   Show a message to the user.
-  
+
   @param engine:  Game engine
   @param text:    Message text
   """
@@ -1294,7 +1296,7 @@ def showMessage(engine, text):
 def estimateBpm(engine, song, prompt):
   """
   Ask the user to estimate the beats per minute value of a song.
-  
+
   @param engine:  Game engine
   @param song:    Song instance
   @param prompt:  Prompt shown to the user
@@ -1302,4 +1304,4 @@ def estimateBpm(engine, song, prompt):
   d = BpmEstimator(engine, song, prompt)
   _runDialog(engine, d)
   return d.bpm
-  
+

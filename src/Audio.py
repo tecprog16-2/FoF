@@ -139,6 +139,10 @@ if "pyglet" in sys.modules:
         self.source.pause()
 
     def setVolume(self, volume):
+
+      assert self != None, "The this object cannot be null"
+      assert volume >= 0, "The volume cannot be negative"
+
       if self.source:
         self.source.value = volume
 

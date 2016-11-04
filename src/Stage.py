@@ -47,13 +47,19 @@ class Layer(object):
     self.srcBlending = GL_SRC_ALPHA
     self.dstBlending = GL_ONE_MINUS_SRC_ALPHA
     self.effects     = []
-  
+
   def render(self, visibility):
     """
     Render the layer.
 
     @param visibility:  Floating point visibility factor (1 = opaque, 0 = invisibile)
     """
+
+    try:
+      visibility > 0.0 and visibility <= 1.0
+    except ValueError:
+      print "The value of the visibility in the class render in the Stage.py is invalid"
+
     w, h, = self.stage.engine.view.geometry[2:4]
     v = 1.0 - visibility ** 2
     self.drawing.transform.reset()
@@ -71,7 +77,7 @@ class Layer(object):
     # Blend in all the effects
     for effect in self.effects:
       effect.apply()
-    
+
     glBlendFunc(self.srcBlending, self.dstBlending)
     self.drawing.draw(color = self.color)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -192,7 +198,7 @@ class RotateEffect(Effect):
   def apply(self):
     if not self.stage.lastMissPos:
       return
-    
+
     t = self.trigger()
     self.layer.drawing.transform.rotate(t * self.angle)
 
@@ -205,7 +211,7 @@ class WiggleEffect(Effect):
 
   def apply(self):
     t = self.trigger()
-    
+
     w, h = self.stage.engine.view.geometry[2:4]
     p = t * 2 * math.pi * self.freq
     s, c = t * math.sin(p), t * math.cos(p)
@@ -241,7 +247,7 @@ class Stage(object):
           if self.config.has_option(section, value):
             return type(self.config.get(section, value))
           return default
-        
+
         xres    = get("xres", int, 256)
         yres    = get("yres", int, 256)
         texture = get("texture")
@@ -251,7 +257,7 @@ class Stage(object):
         except KeyError:
           drawing = self.engine.loadSvgDrawing(self, None, texture, textureSize = (xres, yres))
           self.textures[texture] = drawing
-          
+
         layer = Layer(self, drawing)
 
         layer.position    = (get("xpos",   float, 0.0), get("ypos",   float, 0.0))
@@ -268,7 +274,7 @@ class Stage(object):
           "wiggle":         WiggleEffect,
           "scale":          ScaleEffect,
         }
-        
+
         for j in range(32):
           fxSection = "layer%d:fx%d" % (i, j)
           if self.config.has_section(fxSection):
