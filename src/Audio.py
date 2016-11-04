@@ -77,6 +77,11 @@ if "pyglet" in sys.modules:
 
   class Music(object):
     def __init__(self, fileName):
+      try:
+        type(fileName) is None
+      except ValueError:
+        print "The value of the fileName in the class Music in the Audio.py is invalid"
+
       self.source = pyglet.media.load(fileName, streaming = True)
       self.player = pyglet.media.Player()
 
