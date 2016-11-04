@@ -145,7 +145,11 @@ class Config:
 
     self.config.set(section, option, value)
     
-    f = open(self.fileName, "w")
+    try:
+      f = open(self.fileName, "w")
+    except OSError as err:
+      print("OS error: {0}. Couldnt open the file".format(err))
+    assert f is not FileNotFoundeError
     self.config.write(f)
     f.close()
 
