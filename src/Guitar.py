@@ -79,7 +79,7 @@ class Guitar:
     self.noteReleaseMargin = 60000.0 / bpm / 2
     self.bpm               = bpm
     self.baseBeat          = 0.0
-      
+
   def renderNeck(self, visibility, song, pos):
     if not song:
       return
@@ -97,34 +97,34 @@ class Guitar:
     self.neckDrawing.texture.bind()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-    
+
     glBegin(GL_TRIANGLE_STRIP)
     glColor4f(1, 1, 1, 0)
     glTexCoord2f(0.0, project(offset - 2 * beatsPerUnit))
     glVertex3f(-w / 2, 0, -2)
     glTexCoord2f(1.0, project(offset - 2 * beatsPerUnit))
     glVertex3f( w / 2, 0, -2)
-    
+
     glColor4f(1, 1, 1, v)
     glTexCoord2f(0.0, project(offset - 1 * beatsPerUnit))
     glVertex3f(-w / 2, 0, -1)
     glTexCoord2f(1.0, project(offset - 1 * beatsPerUnit))
     glVertex3f( w / 2, 0, -1)
-    
+
     glTexCoord2f(0.0, project(offset + l * beatsPerUnit * .7))
     glVertex3f(-w / 2, 0, l * .7)
     glTexCoord2f(1.0, project(offset + l * beatsPerUnit * .7))
     glVertex3f( w / 2, 0, l * .7)
-    
+
     glColor4f(1, 1, 1, 0)
     glTexCoord2f(0.0, project(offset + l * beatsPerUnit))
     glVertex3f(-w / 2, 0, l)
     glTexCoord2f(1.0, project(offset + l * beatsPerUnit))
     glVertex3f( w / 2, 0, l)
     glEnd()
-    
+
     glDisable(GL_TEXTURE_2D)
-    
+
   def renderTracks(self, visibility):
     w = self.boardWidth / self.strings
     v = 1.0 - visibility
@@ -134,9 +134,9 @@ class Guitar:
       s = 2 * w / self.strings
       z1 = -0.5 * visibility ** 2
       z2 = (self.boardLength - 0.5) * visibility ** 2
-      
+
       glColor4f(1, 1, 1, .15)
-      
+
       glBegin(GL_TRIANGLE_STRIP)
       glVertex3f(x - s, 0, z1)
       glVertex3f(x + s, 0, z1)
@@ -163,11 +163,11 @@ class Guitar:
       glEnd()
       v *= 2
     glDisable(GL_TEXTURE_2D)
-      
+
   def renderBars(self, visibility, song, pos):
     if not song:
       return
-    
+
     w            = self.boardWidth
     v            = 1.0 - visibility
     sw           = 0.04
@@ -181,7 +181,7 @@ class Guitar:
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glEnable(GL_TEXTURE_2D)
     self.barDrawing.texture.bind()
-     
+
     glPushMatrix()
     while beat < currentBeat + self.beatsPerBoard:
       z = (beat - currentBeat) / beatsPerUnit
@@ -192,7 +192,7 @@ class Guitar:
         c = max(0, 1 + z)
       else:
         c = 1.0
-        
+
       glRotate(v * 90, 0, 0, 1)
 
       if (beat % 1.0) < 0.001:
@@ -210,7 +210,7 @@ class Guitar:
       glTexCoord2f(1.0, 1.0)
       glVertex3f(w / 2,    -v, z - sw)
       glEnd()
-      
+
       if self.editorMode:
         beat += 1.0 / 4.0
       else:
@@ -257,7 +257,7 @@ class Guitar:
 
     if tailOnly:
       return
-    
+
     glPushMatrix()
     glEnable(GL_DEPTH_TEST)
     glDepthMask(1)
@@ -276,6 +276,12 @@ class Guitar:
     glEnable(GL_BLEND)
 
   def renderNotes(self, visibility, song, pos):
+
+    assert self != None, "This object cannot be negative in the renderNotes method of the Guitar.py"
+    assert type(visibility)  ==  float, "The visibilit should be float in the renderNotes method of the Guitar.py"
+    assert pos != None, "The pos cannot be null in the renderNotes method of the Guitar.py "
+
+
     if not song:
       return
 
@@ -294,10 +300,10 @@ class Guitar:
           self.targetBpm         = event.bpm
           self.lastBpmChange     = time
         continue
-      
+
       if not isinstance(event, Note):
         continue
-        
+
       c = self.fretColors[event.number]
 
       x  = (self.strings / 2 - event.number) * w
@@ -316,7 +322,7 @@ class Guitar:
       flat       = False
       tailOnly   = False
       isTappable = event.tappable
-      
+
       # Clip the played notes to the origin
       if z < 0:
         if event.played:
@@ -407,9 +413,9 @@ class Guitar:
   def renderFrets(self, visibility, song, controls):
     w = self.boardWidth / self.strings
     v = 1.0 - visibility
-    
+
     glEnable(GL_DEPTH_TEST)
-    
+
     for n in range(self.strings):
       f = self.fretWeight[n]
       c = self.fretColors[n]
@@ -513,7 +519,7 @@ class Guitar:
     notes   = [(time, event) for time, event in notes if not event.played]
 
     return notes
-    
+
   def getRequiredNotes(self, song, pos):
     track = song.track
     notes = [(time, event) for time, event in track.getEvents(pos - self.lateMargin, pos + self.earlyMargin) if isinstance(event, Note)]
@@ -526,7 +532,7 @@ class Guitar:
 
   def controlsMatchNotes(self, controls, notes):
     result = True
-    
+
     # no notes?
     if not notes:
       result = False
@@ -560,11 +566,11 @@ class Guitar:
       if not note.tappable:
         return False
     return True
-  
+
   def startPick(self, song, pos, controls):
     if not song:
       return False
-    
+
     self.playedNotes = []
     notes = self.getRequiredNotes(song, pos)
     match = self.controlsMatchNotes(controls, notes)
@@ -604,14 +610,14 @@ class Guitar:
       if time + note.length > pos + self.noteReleaseMargin:
         self.playedNotes = []
         return False
-      
+
     self.playedNotes = []
     return True
-    
+
   def getPickLength(self, pos):
     if not self.playedNotes:
       return 0.0
-    
+
     # The pick length is limited by the played notes
     pickLength = pos - self.pickStartPos
     for time, note in self.playedNotes:
@@ -620,7 +626,7 @@ class Guitar:
 
   def run(self, ticks, pos, controls):
     self.time += ticks
-    
+
     # update frets
     if self.editorMode:
       if (controls.getState(Player.ACTION1) or controls.getState(Player.ACTION2)):
@@ -629,7 +635,7 @@ class Guitar:
         activeFrets = []
     else:
       activeFrets = [note.number for time, note in self.playedNotes]
-    
+
     for n in range(self.strings):
       if controls.getState(KEYS[n]) or (self.editorMode and self.selectedString == n):
         self.fretWeight[n] = 0.5
