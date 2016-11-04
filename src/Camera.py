@@ -24,6 +24,7 @@ from OpenGL.GLU import *
 
 class Camera:
   def __init__(self):
+    assert self is not None
     # Camera origin vector
     self.origin = (10.0, 0.0, 10.0)
     # Camera target vector
@@ -32,6 +33,7 @@ class Camera:
     self.up     = (0.0, 1.0, 0.0)
 
   def apply(self):
+    assert self is not None
     """Load the camera matrix."""
     gluLookAt(self.origin[0], self.origin[1], self.origin[2],
               self.target[0], self.target[1], self.target[2],
