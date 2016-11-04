@@ -33,8 +33,8 @@ ROUND = 5
 numberPi = 3.1415926
 angleForConvertion = 180
 
-angleToRadian = 3.1415926 / 180.0
-radianToAngle = 180.0 / 3.1415926
+angleToRadian = numberPi / angleForConvertion
+radianToAngle = angleForConvertion / numberPi
 
 # Convert a string to a float if the value exists
 def ToFloat(val):
