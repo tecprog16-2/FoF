@@ -30,6 +30,9 @@ ROUND = 5
 
 #---Functions----
 
+numberPi = 3.1415926
+angleForConvertion = 180
+
 angleToRadian = 3.1415926 / 180.0
 radianToAngle = 180.0 / 3.1415926
 
