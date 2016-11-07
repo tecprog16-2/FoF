@@ -56,12 +56,12 @@ class Choice:
     if isinstance(nextMenu, Menu):
       engine.view.pushLayer(nextMenu)
 
-  def __selectNextValue(self):
+  def selectNextValue(self):
     if self.values:
       self.valueIndex = (self.valueIndex + 1) % len(self.values)
       self.trigger()
 
-  def __selectPreviousValue(self):
+  def selectPreviousValue(self):
     if self.values:
       self.valueIndex = (self.valueIndex - 1) % len(self.values)
       self.trigger()
@@ -100,7 +100,7 @@ class Menu(Layer, KeyListener):
         pass
       self.choices.append(c)
 
-  def __selectItem(self, index):
+  def selectItem(self, index):
     self.currentIndex = index
 
   def shown(self):
