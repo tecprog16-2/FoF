@@ -36,11 +36,24 @@ Config.define("theme", "fret4_color",       str, "#FF22FF")
 def hexToColor(color):
   if color[0] == "#":
     color = color[1:]
+
+
     if len(color) == 3:
-      return (int(color[0], 16) / 15.0, int(color[1], 16) / 15.0, int(color[2], 16) / 15.0)
-    return (int(color[0:2], 16) / 255.0, int(color[2:4], 16) / 255.0, int(color[4:6], 16) / 255.0)
-  return (0, 0, 0)
-    
+      valorRed = int(color[0], 16) / 15.0
+      valorGreen = int(color[1], 16) / 15.0
+      valorBlue = int(color[2], 16) / 15.0
+      return (valorRed, valorGreen, valorBlue)
+
+    else:
+      valorRed = int(color[0:2], 16) / 255.0
+      valorGreen = int(color[2:4], 16) / 255.0
+      valorBlue = int(color[4:6], 16) / 255.0
+      return (valorRed, valorGreen, valorBlue)
+
+  else:
+    return (0, 0, 0)
+
+
 def colorToHex(color):
   return "#" + ("".join(["%02x" % int(c * 255) for c in color]))
 
