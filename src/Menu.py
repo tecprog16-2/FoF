@@ -61,7 +61,7 @@ class Choice:
       self.valueIndex = (self.valueIndex + 1) % len(self.values)
       self.trigger()
 
-  def selectPreviousValue(self):
+  def __selectPreviousValue(self):
     if self.values:
       self.valueIndex = (self.valueIndex - 1) % len(self.values)
       self.trigger()
