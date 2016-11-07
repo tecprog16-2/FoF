@@ -34,11 +34,11 @@ class Option:
   def __init__(self, **args):
     for key, value in args.items():
       setattr(self, key, value)
-      
+
 def define(section, option, type, default = None, text = None, options = None, prototype = prototype):
   """
   Define a configuration key.
-  
+
   @param section:    Section name
   @param option:     Option name
   @param type:       Key type (e.g. str, int, ...)
@@ -50,10 +50,10 @@ def define(section, option, type, default = None, text = None, options = None, p
   """
   if not section in prototype:
     prototype[section] = {}
-    
+
   if type == bool and not options:
     options = [True, False]
-    
+
   prototype[section][option] = Option(type = type, default = default, text = text, options = options)
 
 def load(fileName = None, setAsDefault = False):
@@ -81,9 +81,9 @@ class Config:
         path = Resource.getWritableResourcePath()
         fileName = os.path.join(path, fileName)
       self.config.read(fileName)
-  
+
     self.fileName  = fileName
-  
+
     # fix the defaults and non-existing keys
     for section, options in prototype.items():
       if not self.config.has_section(section):
@@ -93,11 +93,11 @@ class Config:
         default = options[option].default
         if not self.config.has_option(section, option):
           self.config.set(section, option, str(default))
-    
+
   def get(self, section, option):
     """
     Read a configuration key.
-    
+
     @param section:   Section name
     @param option:    Option name
     @return:          Key value
@@ -108,7 +108,7 @@ class Config:
     except KeyError:
       Log.warn("Config key %s.%s not defined while reading." % (section, option))
       type, default = str, None
-  
+
     value = self.config.has_option(section, option) and self.config.get(section, option) or default
     if type == bool:
       value = str(value).lower()
@@ -118,14 +118,14 @@ class Config:
         value = False
     else:
       value = type(value)
-      
+
     #Log.debug("%s.%s = %s" % (section, option, value))
     return value
 
   def set(self, section, option, value):
     """
     Set the value of a configuration key.
-    
+
     @param section:   Section name
     @param option:    Option name
     @param value:     Value name
@@ -134,7 +134,7 @@ class Config:
       prototype[section][option]
     except KeyError:
       Log.warn("Config key %s.%s not defined while writing." % (section, option))
-    
+
     if not self.config.has_section(section):
       self.config.add_section(section)
 
@@ -144,30 +144,30 @@ class Config:
       value = str(value)
 
     self.config.set(section, option, value)
-    
+
     try:
       f = open(self.fileName, "w")
     except OSError as err:
       print("OS error: {0}. Couldnt open the file".format(err))
-    assert f is not FileNotFoundeError
+    assert f is not None
     self.config.write(f)
     f.close()
 
 def get(section, option):
   """
   Read the value of a global configuration key.
-  
+
   @param section:   Section name
   @param option:    Option name
   @return:          Key value
   """
   global config
   return config.get(section, option)
-  
+
 def set(section, option, value):
   """
   Write the value of a global configuration key.
-  
+
   @param section:   Section name
   @param option:    Option name
   @param value:     New key value
