@@ -37,13 +37,13 @@ class Choice:
     self.callback   = callback
     self.values     = values
     self.valueIndex = valueIndex
-  
+
     if self.text.endswith(" >"):
       self.text = text[:-2]
       self.isSubMenu = True
     else:
       self.isSubMenu = isinstance(self.callback, Menu) or isinstance(self.callback, list)
-    
+
   def trigger(self, engine = None):
     if engine and isinstance(self.callback, list):
       nextMenu = Menu(engine, self.callback)
@@ -55,8 +55,8 @@ class Choice:
       nextMenu = self.callback()
     if isinstance(nextMenu, Menu):
       engine.view.pushLayer(nextMenu)
-      
-  def selectNextValue(self):
+
+  def __selectNextValue(self):
     if self.values:
       self.valueIndex = (self.valueIndex + 1) % len(self.values)
       self.trigger()
@@ -65,7 +65,7 @@ class Choice:
     if self.values:
       self.valueIndex = (self.valueIndex - 1) % len(self.values)
       self.trigger()
-      
+
   def getText(self, selected):
     if not self.values:
       if self.isSubMenu:
@@ -75,7 +75,7 @@ class Choice:
       return "%s: %s%s%s" % (self.text, Data.LEFT, self.values[self.valueIndex], Data.RIGHT)
     else:
       return "%s: %s" % (self.text, self.values[self.valueIndex])
-          
+
 class Menu(Layer, KeyListener):
   def __init__(self, engine, choices, onClose = None, onCancel = None, pos = (.2, .66 - .35), viewSize = 6, fadeScreen = False):
     self.engine       = engine
@@ -88,7 +88,7 @@ class Menu(Layer, KeyListener):
     self.pos          = pos
     self.viewSize     = viewSize
     self.fadeScreen   = fadeScreen
-    
+
     for c in choices:
       try:
         text, callback = c
@@ -99,14 +99,14 @@ class Menu(Layer, KeyListener):
       except TypeError:
         pass
       self.choices.append(c)
-      
+
   def selectItem(self, index):
     self.currentIndex = index
-    
+
   def shown(self):
     self.engine.input.addKeyListener(self)
     self.engine.input.enableKeyRepeat()
-    
+
   def hidden(self):
     self.engine.input.removeKeyListener(self)
     self.engine.input.disableKeyRepeat()
@@ -118,7 +118,7 @@ class Menu(Layer, KeyListener):
       self.viewOffset = self.currentIndex - self.viewSize + 1
     if self.currentIndex < self.viewOffset:
       self.viewOffset = self.currentIndex
-    
+
   def keyPressed(self, key, unicode):
     self.time = 0
     choice = self.choices[self.currentIndex]
@@ -145,7 +145,7 @@ class Menu(Layer, KeyListener):
     elif c in [Player.LEFT, Player.KEY3]:
       choice.selectPreviousValue()
     return True
-    
+
   def run(self, ticks):
     self.time += ticks / 50.0
 
@@ -156,7 +156,7 @@ class Menu(Layer, KeyListener):
     glVertex2f((-up[0] + left[0]) * s, (-up[1] + left[1]) * s)
     glVertex2f((-up[0] - left[0]) * s, (-up[1] - left[1]) * s)
     glEnd()
-  
+
   def render(self, visibility, topMost):
     if not visibility:
       return
@@ -168,7 +168,7 @@ class Menu(Layer, KeyListener):
 
       if self.fadeScreen:
         Dialogs.fadeScreen(v)
-      
+
       glEnable(GL_BLEND)
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
       glEnable(GL_COLOR_MATERIAL)
