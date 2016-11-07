@@ -100,7 +100,7 @@ class Menu(Layer, KeyListener):
         pass
       self.choices.append(c)
 
-  def selectItem(self, index):
+  def __selectItem(self, index):
     self.currentIndex = index
 
   def shown(self):
