@@ -463,7 +463,11 @@ class DaeDocument(object):
 		AppendChild(self,colladaNode,self.scene)
 
 		# write xml to the file
-		fileref = open(filename, 'w')
+		try:
+			fileref = open(filename, 'w')
+		except IOError as (errno, strerror):
+    			print "I/O error({0}): {1}".format(errno, strerror)
+
 		fileref.write(ToXml(colladaNode))
 		fileref.flush()
 		fileref.close()
