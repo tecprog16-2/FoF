@@ -76,12 +76,16 @@ class Font:
 
   def getHeight(self):
     """@return: The height of this font"""
-    return self.font.get_height() * self.scale
+    heightOfTextFont = self.font.get_height() * self.scale
+    assert type(heightOfTextFont) is float and heightOfTextFont is not None, "Invalid Height Font!"
+    return heightOfTextFont
 
   def getLineSpacing(self):
     """@return: The line spacing of this font"""
-    return self.font.get_linesize() * self.scale
-    
+    lineSpacingOfFont = self.font.get_linesize() * self.scale
+    assert type(lineSpacingOfFont) is float and lineSpacingOfFont is not None, "Invalid line spacing!"
+    return lineSpacingOfFont
+
   def setCustomGlyph(self, character, texture):
     """
     Replace a character with a texture.
@@ -180,7 +184,7 @@ class Font:
       glPopAttrib()
 
     self._renderString(text, pos, direction, scale)
-    
+
     glDisableClientState(GL_VERTEX_ARRAY)
     glDisableClientState(GL_TEXTURE_COORD_ARRAY)
     glDisable(GL_TEXTURE_2D)
