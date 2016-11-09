@@ -31,7 +31,7 @@ class TimerTest(unittest.TestCase):
 
   def tearDown(self):
     pygame.quit()
-  
+
   def testFrameLimiter(self):
     t = Timer(fps = 60)
 
