@@ -1,6 +1,10 @@
 import re
 
-rgbFIle= open("/etc/X11/rgb.txt")
+try:
+    rgbFIle= open("/etc/X11/rgb.txt")
+except IOError:
+    print ("rgb.txt not found")
+
 
 print "colors = {"
 for line in rgbFIle.readlines():
