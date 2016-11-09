@@ -31,10 +31,10 @@ from Task import Task
 class Layer(Task):
   def render(self, visibility, topMost):
     pass
-    
+
   def shown(self):
     pass
-  
+
   def hidden(self):
     pass
 
@@ -65,7 +65,7 @@ class View(Task):
 
   def pushLayer(self, layer):
     Log.debug("View: Push: %s" % layer.__class__.__name__)
-    
+
     if not layer in self.layers:
       self.layers.append(layer)
       self.incoming.append(layer)
@@ -78,15 +78,21 @@ class View(Task):
     self.engine.addTask(layer)
 
   def topLayer(self):
+    assert self is not None, "top Layer View is invalid!"
+
     layers = list(self.layers)
+    assert type(layers) is list, "invalid Top Layer list!"
+
     layers.reverse()
+    assert layers is not None, "Layers cant be reversed!"
     for layer in layers:
       if layer not in self.outgoing:
+        assert layer is not None, "Invalid Layer!"
         return layer
 
   def popLayer(self, layer):
     Log.debug("View: Pop: %s" % layer.__class__.__name__)
-    
+
     if layer in self.incoming:
       self.incoming.remove(layer)
     if layer in self.layers and not layer in self.outgoing:
@@ -98,7 +104,7 @@ class View(Task):
 
   def isTransitionInProgress(self):
     return self.incoming or self.outgoing
-  
+
   def run(self, ticks):
     if not self.layers:
       return
@@ -141,7 +147,7 @@ class View(Task):
       # aspect ratio correction
       h *= (float(w) / float(h)) / (4.0 / 3.0)
       viewport = [0, 0, 1, h / w]
-  
+
     if yIsDown:
       glOrtho(viewport[0], viewport[2] - viewport[0],
               viewport[3] - viewport[1], viewport[1], -100, 100);
@@ -151,7 +157,7 @@ class View(Task):
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
-  
+
   def resetProjection(self):
     glMatrixMode(GL_PROJECTION)
     glPopMatrix()
@@ -171,7 +177,7 @@ class View(Task):
 
   def resetGeometry(self):
     assert self.savedGeometry
-    
+
     self.savedGeometry, geometry = None, self.savedGeometry
     self.geometry = geometry
     glViewport(*geometry)
