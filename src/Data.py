@@ -60,7 +60,7 @@ class Data(object):
     reversed  = _("__lefttoright__") == "__righttoleft__" and True or False
     scale     = Config.get("video", "fontscale")
     fontSize  = [22, 108]
-    
+
     if asciiOnly:
       font    = resource.fileName("default.ttf")
       bigFont = resource.fileName("title.ttf")
@@ -90,7 +90,7 @@ class Data(object):
 
   def loadScrewUpSounds(self):
     return [Sound(self.resource.fileName("fiba%d.ogg" % i)) for i in range(1, 7)]
-    
+
   def loadSvgDrawing(self, target, name, fileName, textureSize = None):
     """
     Load an SVG drawing synchronously.
@@ -107,8 +107,8 @@ class Data(object):
     if textureSize:
       drawing.convertToTexture(textureSize[0], textureSize[1])
     return drawing
-      
-      
+
+
   def customizeFont(self, font):
     # change some predefined characters to custom images
     font.setCustomGlyph(STAR1, self.star1.texture)
@@ -120,20 +120,29 @@ class Data(object):
 
   def getSelectSound(self):
     """@return: A randomly chosen selection sound."""
-    return random.choice([self.selectSound1, self.selectSound2, self.selectSound3])
+
+    randomlyChosenSelectionSound = random.choice([self.selectSound1, self.selectSound2, self.selectSound3])
+    assert randomlyChosenSelectionSound is not None, "Invalid Sound!"
+    return randomlyChosenSelectionSound
 
   selectSound = property(getSelectSound)
 
   def getScrewUpSound(self):
     """@return: A randomly chosen screw-up sound."""
-    return random.choice(self.screwUpSounds)
+    randomlyChosenScrewUpSound = random.choice(self.screwUpSounds)
+    assert randomlyChosenScrewUpSound is not None, "invalid Sound!"
+    return randomlyChosenScrewUpSound
 
   screwUpSound = property(getScrewUpSound)
 
   def essentialResourcesLoaded(self):
     """return: True if essential resources such as the font have been loaded."""
-    return bool(self.font and self.bigFont)
+    isResourceLoaded = bool(self.font and self.bigFont)
+    assert type(isResourceLoaded) is bool and isResourceLoaded is not None, "Invalid validation of Resources Loaded"
+    return isResourceLoaded
 
   def resourcesLoaded(self):
     """return: True if all the resources have been loaded."""
-    return not None in self.__dict__.values()
+    isAllResourceLoaded  = not None in self.__dict__.values()
+    assert type(isAllResourceLoaded) is bool and isAllResourceLoaded is not None, "Invalid validation fo All Resources Loaded!"
+    return isAllResourceLoaded
