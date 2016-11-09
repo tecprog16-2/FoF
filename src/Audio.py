@@ -125,7 +125,10 @@ if "pyglet" in sys.modules:
     def getPosition(self):
       # TODO: figure out a way to increase precision here
       #self.player._audio.pump()
-      return self.player.time * 1000.0
+
+      positionPlayerTime = self.player.time * 1000.0
+      assert positionPlayerTime is float and positionPlayerTime != None , "The position player time is invalid!"
+      return positionPlayerTime
 
   class Channel(object):
     def __init__(self, id):
