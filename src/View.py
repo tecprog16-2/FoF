@@ -142,11 +142,11 @@ class View(Task):
 
     viewport = glGetIntegerv(GL_VIEWPORT)
     if normalize:
-      w = viewport[2] - viewport[0]
-      h = viewport[3] - viewport[1]
+      widthOrthogonalProjection = viewport[2] - viewport[0]
+      heightOrthogonalPorjection = viewport[3] - viewport[1]
       # aspect ratio correction
-      h *= (float(w) / float(h)) / (4.0 / 3.0)
-      viewport = [0, 0, 1, h / w]
+      heightOrthogonalPorjection *= (float(widthOrthogonalProjection) / float(heightOrthogonalPorjection)) / (4.0 / 3.0)
+      viewport = [0, 0, 1, heightOrthogonalPorjection / widthOrthogonalProjection]
 
     if yIsDown:
       glOrtho(viewport[0], viewport[2] - viewport[0],
