@@ -60,18 +60,18 @@ class Layer(object):
     except ValueError:
       print "The value of the visibility in the class render in the Stage.py is invalid"
 
-    w, h, = self.stage.engine.view.geometry[2:4]
+    width, height, = self.stage.engine.view.geometry[2:4]
     v = 1.0 - visibility ** 2
     self.drawing.transform.reset()
-    self.drawing.transform.translate(w / 2, h / 2)
+    self.drawing.transform.translate(width / 2, height / 2)
     if v > .01:
       self.color = (self.color[0], self.color[1], self.color[2], visibility)
       if self.position[0] < -.25:
-        self.drawing.transform.translate(-v * w, 0)
+        self.drawing.transform.translate(-v * width, 0)
       elif self.position[0] > .25:
-        self.drawing.transform.translate(v * w, 0)
+        self.drawing.transform.translate(v * width, 0)
     self.drawing.transform.scale(self.scale[0], -self.scale[1])
-    self.drawing.transform.translate(self.position[0] * w / 2, -self.position[1] * h / 2)
+    self.drawing.transform.translate(self.position[0] * width / 2, -self.position[1] * height / 2)
     self.drawing.transform.rotate(self.angle)
 
     # Blend in all the effects
@@ -117,26 +117,26 @@ class Effect(object):
   def triggerBeat(self):
     if not self.stage.lastBeatPos:
       return 0.0
-    t = self.stage.pos - self.delay * self.stage.beatPeriod - self.stage.lastBeatPos
-    return self.intensity * (1.0 - self.triggerProf(0, self.stage.beatPeriod, t))
+    trigger = self.stage.pos - self.delay * self.stage.beatPeriod - self.stage.lastBeatPos
+    return self.intensity * (1.0 - self.triggerProf(0, self.stage.beatPeriod, trigger))
 
   def triggerQuarterbeat(self):
     if not self.stage.lastQuarterBeatPos:
       return 0.0
-    t = self.stage.pos - self.delay * (self.stage.beatPeriod / 4) - self.stage.lastQuarterBeatPos
-    return self.intensity * (1.0 - self.triggerProf(0, self.stage.beatPeriod / 4, t))
+    trigger = self.stage.pos - self.delay * (self.stage.beatPeriod / 4) - self.stage.lastQuarterBeatPos
+    return self.intensity * (1.0 - self.triggerProf(0, self.stage.beatPeriod / 4, trigger))
 
   def triggerPick(self):
     if not self.stage.lastPickPos:
       return 0.0
-    t = self.stage.pos - self.delay * self.period - self.stage.lastPickPos
-    return self.intensity * (1.0 - self.triggerProf(0, self.period, t))
+    trigger = self.stage.pos - self.delay * self.period - self.stage.lastPickPos
+    return self.intensity * (1.0 - self.triggerProf(0, self.period, trigger))
 
   def triggerMiss(self):
     if not self.stage.lastMissPos:
       return 0.0
-    t = self.stage.pos - self.delay * self.period - self.stage.lastMissPos
-    return self.intensity * (1.0 - self.triggerProf(0, self.period, t))
+    trigger = self.stage.pos - self.delay * self.period - self.stage.lastMissPos
+    return self.intensity * (1.0 - self.triggerProf(0, self.period, trigger))
 
   def step(self, threshold, x):
     return (x > threshold) and 1 or 0
@@ -173,13 +173,13 @@ class Effect(object):
       return Theme.fretColors[-1]
     elif note <= 0:
       return Theme.fretColors[0]
-    f2  = note % 1.0
-    f1  = 1.0 - f2
-    c1 = Theme.fretColors[int(note)]
-    c2 = Theme.fretColors[int(note) + 1]
-    return (c1[0] * f1 + c2[0] * f2, \
-            c1[1] * f1 + c2[1] * f2, \
-            c1[2] * f1 + c2[2] * f2)
+    fret2  = note % 1.0
+    fret1  = 1.0 - fret2
+    color1 = Theme.fretColors[int(note)]
+    color2 = Theme.fretColors[int(note) + 1]
+    return (color1[0] * fret1 + color2[0] * fret2, \
+            color1[1] * fret1 + color2[1] * fret2, \
+            color1[2] * fret1 + color2[2] * fret2)
 
 class LightEffect(Effect):
   def __init__(self, layer, options):
@@ -195,10 +195,10 @@ class LightEffect(Effect):
     else:
       '''Do nothing'''
 
-    t = self.trigger()
-    t = self.ambient + self.contrast * t
-    c = self.getNoteColor(self.stage.averageNotes[self.lightNumber])
-    self.layer.color = (c[0] * t, c[1] * t, c[2] * t, self.intensity)
+    trigger = self.trigger()
+    trigger = self.ambient + self.contrast * trigger
+    color = self.getNoteColor(self.stage.averageNotes[self.lightNumber])
+    self.layer.color = (color[0] * trigger, color[1] * trigger, color[2] * trigger, self.intensity)
 
 class RotateEffect(Effect):
   def __init__(self, layer, options):
@@ -209,8 +209,8 @@ class RotateEffect(Effect):
     if not self.stage.lastMissPos:
       return
 
-    t = self.trigger()
-    self.layer.drawing.transform.rotate(t * self.angle)
+    trigger = self.trigger()
+    self.layer.drawing.transform.rotate(trigger * self.angle)
 
 class WiggleEffect(Effect):
   def __init__(self, layer, options):
@@ -220,12 +220,12 @@ class WiggleEffect(Effect):
     self.ymag     = float(options.get("ymagnitude", 0.1))
 
   def apply(self):
-    t = self.trigger()
+    trigger = self.trigger()
 
-    w, h = self.stage.engine.view.geometry[2:4]
-    p = t * 2 * math.pi * self.freq
-    s, c = t * math.sin(p), t * math.cos(p)
-    self.layer.drawing.transform.translate(self.xmag * w * s, self.ymag * h * c)
+    width, height = self.stage.engine.view.geometry[2:4]
+    p = trigger * 2 * math.pi * self.freq
+    s, c = trigger * math.sin(p), trigger * math.cos(p)
+    self.layer.drawing.transform.translate(self.xmag * width * s, self.ymag * height * c)
 
 class ScaleEffect(Effect):
   def __init__(self, layer, options):
