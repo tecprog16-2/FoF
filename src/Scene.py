@@ -179,6 +179,8 @@ class SceneServer(Scene):
       if player.owner == owner:
         player.controls.flags = flags
         break
+      else:
+        '''Do nothing'''
 
   def handleCreateActor(self, sender, name):
     id = self.objects.generateId()
@@ -189,6 +191,8 @@ class SceneServer(Scene):
       if actor.owner == session.id:
         id = self.objects.id(actor)
         self.server.broadcastMessage(ActorDeleted(id = id))
+      else:
+        '''Do nothing'''
 
   def handleSessionOpened(self, session):
     for actor in self.actors:
@@ -212,3 +216,5 @@ class SceneServer(Scene):
     if self.updateCounter > self.updateInterval:
       self.updateCounter %= self.updateInterval
       self.broadcastState()
+    else:
+      '''Do nothing'''
