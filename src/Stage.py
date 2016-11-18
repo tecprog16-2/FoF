@@ -184,8 +184,6 @@ class LightEffect(Effect):
     if len(self.stage.averageNotes) < self.lightNumber + 2:
       self.layer.color = (0.0, 0.0, 0.0, 0.0)
       return
-    else:
-      # Do nothing
 
     t = self.trigger()
     t = self.ambient + self.contrast * t
@@ -200,8 +198,6 @@ class RotateEffect(Effect):
   def apply(self):
     if not self.stage.lastMissPos:
       return
-    else:
-      # Do nothing
 
     t = self.trigger()
     self.layer.drawing.transform.rotate(t * self.angle)

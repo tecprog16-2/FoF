@@ -37,8 +37,6 @@ class Video:
               multisamples = 0):
     if fullscreen:
       flags |= pygame.FULLSCREEN
-    else:
-      # Do nothing
       
     self.flags      = flags
     self.fullscreen = fullscreen
@@ -81,9 +79,6 @@ class Video:
         glEnable(GL_MULTISAMPLE_ARB)
       except:
         pass
-    else:
-      # Do nothing
-
 
     return bool(self.screen)
     

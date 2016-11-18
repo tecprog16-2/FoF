@@ -119,8 +119,7 @@ class SceneClient(Scene, KeyListener):
     if c:
       self.session.sendMessage(ControlEvent(flags = self.controls.flags))
       return True
-    else:
-      return False
+    return False
 
   def handleControlData(self, sender, owner, flags):
     # TODO: player mapping
@@ -128,8 +127,6 @@ class SceneClient(Scene, KeyListener):
       if player.owner == owner:
         player.controls.flags = flags
         break
-      else:
-        # Do nothing
 
   def handleActorData(self, sender, id, data):
     actor = self.objects[id]
@@ -165,62 +162,53 @@ class SceneClient(Scene, KeyListener):
       glPopMatrix()
       glMatrixMode(GL_MODELVIEW)
 
+class SceneServer(Scene):
+  def __init__(self, engine, owner, server, **args):
+    Scene.__init__(self, engine, owner, **args)
+    self.server = server
+    self.updateInterval = self.engine.config.get("network", "updateinterval")
+    self.updateCounter = 0
+    self.changedControlData = {}
 
-if __name__ == '__main__':
-  class SceneServer(Scene):
-    def __init__(self, engine, owner, server, **args):
-      Scene.__init__(self, engine, owner, **args)
-      self.server = server
-      self.updateInterval = self.engine.config.get("network", "updateinterval")
-      self.updateCounter = 0
-      self.changedControlData = {}
+  def handleControlEvent(self, sender, flags):
+    self.changedControlData[sender] = flags
 
-    def handleControlEvent(self, sender, flags):
-      self.changedControlData[sender] = flags
+  def handleControlData(self, sender, owner, flags):
+    # TODO: player mapping
+    for player in self.server.world.players:
+      if player.owner == owner:
+        player.controls.flags = flags
+        break
 
-    def handleControlData(self, sender, owner, flags):
-      # TODO: player mapping
-      for player in self.server.world.players:
-        if player.owner == owner:
-          player.controls.flags = flags
-          break
-        else:
-          # Do nothing
+  def handleCreateActor(self, sender, name):
+    id = self.objects.generateId()
+    self.server.broadcastMessage(ActorCreated(owner = sender, name = name, id = id))
 
-    def handleCreateActor(self, sender, name):
-      id = self.objects.generateId()
-      self.server.broadcastMessage(ActorCreated(owner = sender, name = name, id = id))
-
-    def handleSessionClosed(self, session):
-      for actor in self.actors:
-        if actor.owner == session.id:
-          id = self.objects.id(actor)
-          self.server.broadcastMessage(ActorDeleted(id = id))
-        else:
-          # Do nothing
-
-    def handleSessionOpened(self, session):
-      for actor in self.actors:
+  def handleSessionClosed(self, session):
+    for actor in self.actors:
+      if actor.owner == session.id:
         id = self.objects.id(actor)
-        session.sendMessage(ActorCreated(owner = actor.owner, name = actor.__name__, id = id))
+        self.server.broadcastMessage(ActorDeleted(id = id))
 
-    def broadcastState(self):
-      for actor in self.actors:
-        id = self.objects.id(actor)
-        self.server.broadcastMessage(ActorData(id = id, data = actor.getState()), meToo = False)
+  def handleSessionOpened(self, session):
+    for actor in self.actors:
+      id = self.objects.id(actor)
+      session.sendMessage(ActorCreated(owner = actor.owner, name = actor.__name__, id = id))
 
-      for sender, flags in self.changedControlData.items():
-        self.server.broadcastMessage(ControlData(owner = sender, flags = flags))
-      self.changedControlData = {}
+  def broadcastState(self):
+    for actor in self.actors:
+      id = self.objects.id(actor)
+      self.server.broadcastMessage(ActorData(id = id, data = actor.getState()), meToo = False)
 
-    def run(self, ticks):
-      self.runCommon(ticks, self.server.world)
-      Scene.run(self, ticks)
+    for sender, flags in self.changedControlData.items():
+      self.server.broadcastMessage(ControlData(owner = sender, flags = flags))
+    self.changedControlData = {}
 
-      self.updateCounter += ticks
-      if self.updateCounter > self.updateInterval:
-        self.updateCounter %= self.updateInterval
-        self.broadcastState()
-      else:
-        # Do nothing
+  def run(self, ticks):
+    self.runCommon(ticks, self.server.world)
+    Scene.run(self, ticks)
 
+    self.updateCounter += ticks
+    if self.updateCounter > self.updateInterval:
+      self.updateCounter %= self.updateInterval
+      self.broadcastState()
