@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c9d2e4e2-fbcd-4cd4-b2fd-f53ec8f7c420" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Scene.py" afterPath="$PROJECT_DIR$/src/Scene.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Stage.py" afterPath="$PROJECT_DIR$/src/Stage.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Video.py" afterPath="$PROJECT_DIR$/src/Video.py" />
-    </list>
+    <list default="true" id="c9d2e4e2-fbcd-4cd4-b2fd-f53ec8f7c420" name="Default" comment="" />
     <ignored path="FoF.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,16 +20,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Network.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Network.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2205">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="rgb2py.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/rgb2py.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -104,21 +90,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Video.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Video.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Video.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="611">
-              <caret line="84" column="6" selection-start-line="84" selection-start-column="6" selection-end-line="84" selection-end-column="6" />
+            <state relative-caret-position="221">
+              <caret line="40" column="4" selection-start-line="40" selection-start-column="4" selection-end-line="40" selection-end-column="4" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="View.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="View.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/View.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-990">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FretsOnFire.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/FretsOnFire.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="53">
+              <caret line="46" column="10" selection-start-line="46" selection-start-column="10" selection-end-line="46" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -502,18 +498,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Video.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="611">
-          <caret line="84" column="6" selection-start-line="84" selection-start-column="6" selection-end-line="84" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/View.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-990">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/FretsOnFire.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="53">
+          <caret line="46" column="10" selection-start-line="46" selection-start-column="10" selection-end-line="46" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Video.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="40" column="4" selection-start-line="40" selection-start-column="4" selection-end-line="40" selection-end-column="4" />
           <folding />
         </state>
       </provider>
