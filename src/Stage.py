@@ -144,15 +144,23 @@ class Effect(object):
   def linstep(self, min, max, x):
     if x < min:
       return 0
+    else:
+      '''Do nothing'''
     if x > max:
       return 1
+    else:
+      '''Do nothing'''
     return (x - min) / (max - min)
 
   def smoothstep(self, min, max, x):
     if x < min:
       return 0
+    else:
+      '''Do nothing'''
     if x > max:
       return 1
+    else:
+      '''Do nothing'''
     def f(x):
       return -2 * x**3 + 3*x**2
     return f((x - min) / (max - min))
@@ -184,6 +192,8 @@ class LightEffect(Effect):
     if len(self.stage.averageNotes) < self.lightNumber + 2:
       self.layer.color = (0.0, 0.0, 0.0, 0.0)
       return
+    else:
+      '''Do nothing'''
 
     t = self.trigger()
     t = self.ambient + self.contrast * t
@@ -311,6 +321,8 @@ class Stage(object):
       self.lastPickPos      = pos
       self.playedNotes      = self.playedNotes[-3:] + [sum(notes) / float(len(notes))]
       self.averageNotes[-1] = sum(self.playedNotes) / float(len(self.playedNotes))
+    else:
+      '''Do nothing'''
 
   def triggerMiss(self, pos):
     self.lastMissPos = pos
@@ -339,11 +351,15 @@ class Stage(object):
 
     if quarterBeat > self.quarterBeat:
       self.triggerQuarterBeat(pos, quarterBeat)
+    else:
+      '''Do nothing'''
 
     beat = quarterBeat / 4
 
     if beat > self.beat:
       self.triggerBeat(pos, beat)
+    else:
+      '''Do nothing'''
 
   def render(self, visibility):
     self._renderLayers(self.backgroundLayers, visibility)

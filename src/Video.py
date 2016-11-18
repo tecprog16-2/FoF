@@ -37,6 +37,8 @@ class Video:
               multisamples = 0):
     if fullscreen:
       flags |= pygame.FULLSCREEN
+    else:
+      '''Do nothing'''
       
     self.flags      = flags
     self.fullscreen = fullscreen
@@ -56,6 +58,8 @@ class Video:
     if multisamples:
       pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLEBUFFERS, 1);
       pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLESAMPLES, multisamples);
+    else:
+      '''Do nothing'''
 
     try:
       self.screen = pygame.display.set_mode(resolution, flags)
