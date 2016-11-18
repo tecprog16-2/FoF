@@ -35,7 +35,7 @@ class Option:
     for key, value in args.items():
       setattr(self, key, value)
 
-def define(section, option, type, default = None, text = None, options = None, prototype = prototype):
+def define(section = None, option = None, type = None, default = None, text = None, options = None, prototype = prototype):
   """
   Define a configuration key.
 

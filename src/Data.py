@@ -40,7 +40,7 @@ BALL2 = unicode('\x15')
 
 class Data(object):
   """A collection of globally used data resources such as fonts and sound effects."""
-  def __init__(self, resource, svg):
+  def __init__(self, resource = None, svg = None):
     self.resource = resource
     self.svg      = svg
 

@@ -43,7 +43,7 @@ import Data
 import Player
 import Guitar
 
-def wrapText(font, pos, text, rightMargin = 0.9, scale = 0.002, visibility = 0.0, hide = 0, hidestring = ""):
+def wrapText(font = None, pos = None, text = None, rightMargin = 0.9, scale = 0.002, visibility = 0.0, hide = 0, hidestring = ""):
   """
   Wrap a piece of text inside given margins.
 

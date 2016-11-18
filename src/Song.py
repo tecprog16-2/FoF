@@ -108,10 +108,11 @@ class SongInfo(object):
 
   def save(self):
     self._set("scores", self.getObfuscatedScores())
-    
-    f = open(self.fileName, "w")
-    self.info.write(f)
-    f.close()
+
+    file = None
+    file = open(self.fileName, "w")
+    self.info.write(file)
+    file.close()
     
   def _get(self, attr, type = None, default = ""):
     try:

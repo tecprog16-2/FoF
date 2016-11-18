@@ -43,7 +43,7 @@ from struct import unpack
 
 class Editor(Layer, KeyListener):
   """Song editor layer."""
-  def __init__(self, engine, songName = None, libraryName = DEFAULT_LIBRARY):
+  def __init__(self, engine = None, songName = None, libraryName = DEFAULT_LIBRARY):
     self.engine      = engine
     self.time        = 0.0
     self.guitar      = Guitar(self.engine, editorMode = True)
