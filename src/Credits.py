@@ -236,15 +236,18 @@ class Credits(Layer, KeyListener):
     v = 1.0 - ((1 - visibility) ** 2)
 
     # render the background
-    t = self.time / 100 + 34
-    w, h, = self.engine.view.geometry[2:4]
+    time = 0
+    width = 0
+    height = 0
+    time = self.time / 100 + 34
+    width, height, = self.engine.view.geometry[2:4]
     r = .5
     for i, background in [(0, self.background1), (1, self.background2), (2, self.background3)]:
       background.transform.reset()
-      background.transform.translate((1 - v) * 2 * w + w / 2 + math.cos(t / 2) * w / 2 * r, h / 2 + math.sin(t) * h / 2 * r)
-      background.transform.translate(0, -h * (((self.offset + i * 2) % 6.0) - 3.0))
-      background.transform.rotate(math.sin(t * 4 + i) / 2)
-      background.transform.scale(math.sin(t / 8) + 3, math.sin(t / 8) + 3)
+      background.transform.translate((1 - v) * 2 * width + width / 2 + math.cos(time / 2) * width / 2 * r, height / 2 + math.sin(time) * height / 2 * r)
+      background.transform.translate(0, -height * (((self.offset + i * 2) % 6.0) - 3.0))
+      background.transform.rotate(math.sin(time * 4 + i) / 2)
+      background.transform.scale(math.sin(time / 8) + 3, math.sin(time / 8) + 3)
       background.draw()
 
     self.engine.view.setOrthogonalProjection(normalize = True)
@@ -255,10 +258,10 @@ class Credits(Layer, KeyListener):
     glTranslatef(-(1 - v), 0, 0)
     try:
       for element in self.credits:
-        h = element.getHeight()
-        if y + h > 0.0 and y < 1.0:
+        height = element.getHeight()
+        if y + height > 0.0 and y < 1.0:
           element.render(y)
-        y += h
+        y += height
         if y > 1.0:
           break
     finally:

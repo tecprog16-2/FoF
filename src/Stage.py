@@ -59,7 +59,8 @@ class Layer(object):
       visibility > 0.0 and visibility <= 1.0
     except ValueError:
       print "The value of the visibility in the class render in the Stage.py is invalid"
-
+    width = 0
+    height = 0
     width, height, = self.stage.engine.view.geometry[2:4]
     v = 1.0 - visibility ** 2
     self.drawing.transform.reset()
