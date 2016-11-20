@@ -62,13 +62,6 @@ class Font:
     @param scale:   Scale factor
     @return:        (width, height) tuple
     """
-    constScale = 0.002
-    scale = constScale
-    widthText = 0
-    heightText = 0
-    objectScale = self.scale
-    scale = scale * objectScale
-
     for word in text:
 
       try:
@@ -77,9 +70,13 @@ class Font:
         self.glyphSizeCache[word] = self.font.size(word)
         text = self.glyphSizeCache[word]
 
+      widthText = 0
       widthText = widthText + text[0]
+      heightText = 0
       heightText = max(text[1], heightText)
 
+    objectScale = self.scale
+    scale = scale * objectScale
     scaleWidth = widthText * scale
     scaleHeight = heightText * scale
     scaleDimensions = (scaleWidth, scaleHeight)
