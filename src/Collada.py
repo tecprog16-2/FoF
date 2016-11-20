@@ -3175,7 +3175,7 @@ def SetAttribute(xmlNode,syntax, object):
 def ReadNodeUrl(node):
 
 	attribute = ReadAttribute(node,DaeSyntax.URL)
-
+	url = " "
 	if attribute != None:
 		atribute = str(attribute)
 		if attribute.startswith('#'):
@@ -3196,8 +3196,8 @@ def IsVersionOk(version, currentVersion):
 
 	versionNumber = version.split('.')
 	currentVersionNumber = currentVersion.split('.')
-	flag = False
 
+	flag = False
 	if versionNumber == currentVersionNumber:
 		flag = True
 	else:
