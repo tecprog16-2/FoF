@@ -29,21 +29,25 @@ class TestLayer(Layer):
   def __init__(self, engine):
     self.text = None
     self.engine = engine
-  
+
   def run(self, ticks):
     if not self.text:
       self.text = "tmp"
       self.text = getText(self.engine, "Enter name:", "Wario")
+    else:
+      pass
 
 class DialogTestInteractive(unittest.TestCase):
   def testGetTest(self):
     text = getText(self.e, "Please enter your name:", "Wario")
-     
+
   def setUp(self):
     self.e = GameEngine()
-    
+
   def tearDown(self):
     self.e.quit()
 
 if __name__ == "__main__":
   unittest.main()
+else:
+  pass

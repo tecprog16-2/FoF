@@ -212,6 +212,8 @@ class Credits(Layer, KeyListener):
   def hidden(self):
     if self.song:
       self.song.fadeout(1000)
+    else:
+      pass
     self.engine.input.removeKeyListener(self)
     self.engine.view.pushLayer(MainMenu.MainMenu(self.engine))
 
@@ -222,15 +224,21 @@ class Credits(Layer, KeyListener):
     if self.engine.input.controls.getMapping(key) in [Player.CANCEL, Player.KEY1, Player.KEY2] or key == pygame.K_RETURN:
       self.songLoader.cancel()
       self.quit()
+    else:
+      pass
     return True
 
   def run(self, ticks):
     self.time   += ticks / 50.0
     if self.song:
       self.offset -= ticks / 5000.0
+    else:
+      pass
 
     if self.offset < -6.1:
       self.quit()
+    else:
+      pass
 
   def render(self, visibility, topMost):
     v = 1.0 - ((1 - visibility) ** 2)
@@ -261,8 +269,12 @@ class Credits(Layer, KeyListener):
         height = element.getHeight()
         if y + height > 0.0 and y < 1.0:
           element.render(y)
+        else:
+          pass
         y += height
         if y > 1.0:
           break
+        else:
+          pass
     finally:
       self.engine.view.resetProjection()
