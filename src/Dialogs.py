@@ -238,6 +238,8 @@ class GetKey(Layer, KeyListener):
       if self.key is not None:
         text = pygame.key.name(self.key).capitalize()
         pos = wrapText(font, (.1, (pos[1] + v) + .08 + v / 4), text)
+      else:
+        pass
 
     finally:
       self.engine.view.resetProjection()
@@ -259,6 +261,9 @@ class LoadingScreen(Layer, KeyListener):
     c = self.engine.input.controls.getMapping(key)
     if self.allowCancel and c == Player.CANCEL:
       self.engine.view.popLayer(self)
+    else:
+      pass
+
     return True
 
   def hidden(self):
@@ -318,6 +323,9 @@ class MessageScreen(Layer, KeyListener):
     c = self.engine.input.controls.getMapping(key)
     if c in [Player.KEY1, Player.KEY2, Player.CANCEL] or key == pygame.K_RETURN:
       self.engine.view.popLayer(self)
+    else:
+      pass
+
     return True
 
   def hidden(self):
@@ -403,6 +411,9 @@ class SongChooser(Layer, KeyListener):
   def songListLoaded(self, songs):
     if self.songLoader:
       self.songLoader.cancel()
+    else:
+      pass
+
     self.selectedIndex = 0
     self.items         = self.libraries + self.songs
     self.itemAngles    = [0.0] * len(self.items)
@@ -421,6 +432,9 @@ class SongChooser(Layer, KeyListener):
     for i, item in enumerate(self.items):
       if isinstance(item, Song.LibraryInfo):
         self.loadItemLabel(i)
+      else:
+        pass
+
     self.updateSelection()
 
   def shown(self):
@@ -430,9 +444,15 @@ class SongChooser(Layer, KeyListener):
   def hidden(self):
     if self.songLoader:
       self.songLoader.cancel()
+    else:
+      pass
+
     if self.song:
       self.song.fadeout(1000)
       self.song = None
+    else:
+      pass
+
     self.engine.input.removeKeyListener(self)
     self.engine.input.disableKeyRepeat()
 
