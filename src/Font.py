@@ -54,7 +54,7 @@ class Font:
     self.font.set_italic(italic)
     self.font.set_underline(underline)
 
-  def getStringSize(self, s, scale = 0.002):
+  def getStringSize(self, text, scale = 0.002):
     """
     Get the dimensions of a string when rendered with this font.
 
@@ -62,17 +62,29 @@ class Font:
     @param scale:   Scale factor
     @return:        (width, height) tuple
     """
-    w = 0
-    h = 0
-    scale *= self.scale
-    for ch in s:
+    constScale = 0.002
+    scale = constScale
+    widthText = 0
+    heightText = 0
+    objectScale = self.scale
+    scale = scale * objectScale
+
+    for word in text:
+
       try:
-        s = self.glyphSizeCache[ch]
+        text = self.glyphSizeCache[word]
       except:
-        s = self.glyphSizeCache[ch] = self.font.size(ch)
-      w += s[0]
-      h = max(s[1], h)
-    return (w * scale, h * scale)
+        self.glyphSizeCache[word] = self.font.size(word)
+        text = self.glyphSizeCache[word]
+
+      widthText = widthText + text[0]
+      heightText = max(text[1], heightText)
+
+    scaleWidth = widthText * scale
+    scaleHeight = heightText * scale
+    scaleDimensions = (scaleWidth, scaleHeight)
+
+    return scaleDimensions
 
   def getHeight(self):
     """@return: The height of this font"""
