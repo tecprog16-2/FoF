@@ -54,16 +54,18 @@ def wrapText(font = None, positionText = None, text = None, rightMargin = 0.9, s
   @param visibility:  Visibility factor [0..1], 0 is fully visible
   @param hide:        Hide text instead of line wrap
   """
-  coordinatedX, coordinatedY = positionText
+
   space = font.getStringSize(" ", scale = scale)[0]
-  hideWidth, hideHeight = font.getStringSize(hidestring, scale = scale)
-  rightMargin = rightMargin - hideWidth
-
   wordList = enumerate(text.split(" "))
-  for numberWord, word in wordList:
-    width, height = font.getStringSize(word, scale = scale)
 
+  for numberWord, word in wordList:
+
+    width, height = font.getStringSize(word, scale = scale)
+    coordinatedX, coordinatedY = positionText
     dimensionForTextInX = coordinatedX + width
+    hideWidth, hideHeight = font.getStringSize(hidestring, scale = scale)
+    rightMargin = rightMargin - hideWidth
+
     if dimensionForTextInX > rightMargin and hide:
       word = hidestring
 
