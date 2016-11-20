@@ -68,13 +68,19 @@ def wrapText(font = None, positionText = None, text = None, rightMargin = 0.9, s
 
     if dimensionForTextInX > rightMargin and hide:
       word = hidestring
+    else:
+      pass
 
     if (dimensionForTextInX > rightMargin and not hide) or word == "\n":
       coordinatedX = positionText[0]
       coordinatedY = coordinatedY + height
+    else:
+      pass
 
     if word == "\n":
       continue
+    else:
+      pass
 
     glPushMatrix()
 
@@ -91,6 +97,8 @@ def wrapText(font = None, positionText = None, text = None, rightMargin = 0.9, s
     if dimensionForTextInX > rightMargin and hide:
       coordinatedX = coordinatedX + hideWidth + space
       break
+    else:
+      pass
 
   coordinatedX = coordinatedX - space
   positionTextXY = (coordinatedX,coordinatedY)
