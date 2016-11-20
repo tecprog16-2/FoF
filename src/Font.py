@@ -62,6 +62,11 @@ class Font:
     @param scale:   Scale factor
     @return:        (width, height) tuple
     """
+
+
+    widthText = 0
+    heightText = 0
+
     for word in text:
 
       try:
