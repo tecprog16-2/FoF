@@ -3167,25 +3167,44 @@ def SetAttribute(xmlNode,syntax, object):
 		return
 	xmlNode.setAttribute(syntax,str(object))
 
+def SetAttribute(xmlNode,syntax, object):
+	if xmlNode is None or object is None or str(object) == '':
+		return
+	xmlNode.setAttribute(syntax,str(object))
+
 def ReadNodeUrl(node):
+
 	attribute = ReadAttribute(node,DaeSyntax.URL)
-	if attribute == None: return None
-	else :
-		attribute = str(attribute)
+
+	if attribute != None:
+		atribute = str(attribute)
 		if attribute.startswith('#'):
-			return attribute[1:]
-	return None
+			url = attribute[1:]
+	else:
+		url = None
+
+	return url
+
 
 def WriteNodeUrl(node, url):
-	node.setAttribute(DaeSyntax.URL, StripString('#'+url))
+	excludedUrl = StripString('#'+url)
+	newUrl = DaeSyntax.URL
+	nodeUrl = node.setAttribute(newUrl, excludedUrl)
+	return nodeUrl
 
-def IsVersionOk(version, curVersion):
-	versionAr = version.split('.')
-	curVersionAr = curVersion.split('.')
-	for i in range(len(curVersionAr)):
-		if versionAr[i] != curVersionAr[i]:
-			return False
-	return True
+def IsVersionOk(version, currentVersion):
+
+	versionNumber = version.split('.')
+	currentVersionNumber = currentVersion.split('.')
+	flag = False
+
+	if versionNumber == currentVersionNumber:
+		flag = True
+	else:
+		flag = False
+
+	return flag
 
 def StripString(text):
-	return text.replace(' ','_').replace('.','_')
+	newtext = text.replace(' ','_').replace('.','_')
+	return newtext
