@@ -43,7 +43,7 @@ import Data
 import Player
 import Guitar
 
-def wrapText(font = None, pos = None, text = None, rightMargin = 0.9, scale = 0.002, visibility = 0.0, hide = 0, hidestring = ""):
+def wrapText(font = None, positionText = None, text = None, rightMargin = 0.9, scale = 0.002, visibility = 0.0, hide = 0, hidestring = ""):
   """
   Wrap a piece of text inside given margins.
 
@@ -54,28 +54,46 @@ def wrapText(font = None, pos = None, text = None, rightMargin = 0.9, scale = 0.
   @param visibility:  Visibility factor [0..1], 0 is fully visible
   @param hide:        Hide text instead of line wrap
   """
-  x, y = pos
+  coordinatedX, coordinatedY = positionText
   space = font.getStringSize(" ", scale = scale)[0]
-  hidew, hideh = font.getStringSize(hidestring, scale = scale)
-  rightMargin = rightMargin - hidew
-  for n, word in enumerate(text.split(" ")):
-    w, h = font.getStringSize(word, scale = scale)
-    if x + w > rightMargin and hide:
+  hideWidth, hideHeight = font.getStringSize(hidestring, scale = scale)
+  rightMargin = rightMargin - hideWidth
+
+  wordList = enumerate(text.split(" "))
+  for numberWord, word in wordList:
+    width, height = font.getStringSize(word, scale = scale)
+
+    dimensionForTextInX = coordinatedX + width
+    if dimensionForTextInX > rightMargin and hide:
       word = hidestring
-    if (x + w > rightMargin and not hide) or word == "\n":
-      x = pos[0]
-      y += h
+
+    if (dimensionForTextInX > rightMargin and not hide) or word == "\n":
+      coordinatedX = positionText[0]
+      coordinatedY = coordinatedY + height
+
     if word == "\n":
       continue
+
     glPushMatrix()
-    glRotate(visibility * (n + 1) * -45, 0, 0, 1)
-    font.render(word, (x, y + visibility * n), scale = scale)
+
+    constQuadrant = -45
+    numberWordRotation = numberWord + 1
+    degreeRotation = visibility * numberWordRotation * constQuadrant
+    glRotate(degreeRotation, 0, 0, 1)
+
+    positionTextInY = coordinatedY + (visibility * numberWord)
+    positionTextInX = coordinatedX
+    font.render(word, (positionTextInX, positionTextInY), scale = scale)
     glPopMatrix()
-    if x + w > rightMargin and hide:
-      x += hidew + space
+
+    if dimensionForTextInX > rightMargin and hide:
+      coordinatedX = coordinatedX + hideWidth + space
       break
-    x += w + space
-  return (x - space, y)
+
+  coordinatedX = coordinatedX - space
+  positionTextXY = (coordinatedX,coordinatedY)
+
+  return positionTextXY
 
 def fadeScreen(v):
   """
