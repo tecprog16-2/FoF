@@ -31,13 +31,17 @@ import Dialogs
 class GameTask(Task, KeyListener, MessageHandler):
   def __init__(self, engine, session, drawMiniViews = False):
     assert session.world.players, "No players in game"
-    
+
     self.engine = engine
     self.session = session
     self.time = 0.0
     self.session.broker.addMessageHandler(self)
     self.player = self.session.world.getLocalPlayer()
+  """
+  quit(self) method:
 
+  This method is responsible for closing an application independent of the scene is happening.
+  """
   def quit(self):
     self.session.broker.removeMessageHandler(self)
     self.engine.view.popAllLayers()
@@ -45,6 +49,11 @@ class GameTask(Task, KeyListener, MessageHandler):
     self.engine.view.pushLayer(MainMenu.MainMenu(self.engine))
     self.engine.removeTask(self)
 
+  """
+  handleSceneEntered(self, sender, sceneld, playerId) method:
+
+  When called this method checks whether the requested call scene.
+  """
   def handleSceneEntered(self, sender, sceneId, playerId):
     try:
       scene  = self.session.world.objects[sceneId]
@@ -53,6 +62,12 @@ class GameTask(Task, KeyListener, MessageHandler):
     except KeyError:
       pass
 
+
+  """
+  def handleSceneLeft(self, sender, sceneld, playerId) method:
+
+  When calling this method indicates that the scene that was happening was left.
+  """
   def handleSceneLeft(self, sender, sceneId, playerId):
     try:
       scene  = self.session.world.objects[sceneId]
@@ -61,12 +76,24 @@ class GameTask(Task, KeyListener, MessageHandler):
     except KeyError:
       pass
 
+
+  """
+  handleGameFinished(self, sender) method:
+
+  When called this method ends the game.
+  """
   def handleGameFinished(self, sender):
     self.quit()
     s            = self.session
     self.session = None
     self.engine.disconnect(s)
 
+
+  """
+  handleConnectionLost(self, sender) method:
+
+  When called this method indicates that the connection to the host has been lost.
+  """
   def handleConnectionLost(self, sender):
     if self.session:
       Dialogs.showMessage(self.engine, _("Connection lost."))
