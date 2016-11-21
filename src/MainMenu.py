@@ -43,7 +43,7 @@ class MainMenu(BackgroundLayer):
     self.nextLayer           = None
     self.visibility          = 0.0
     self.songName            = songName
-    
+
     self.engine.loadSvgDrawing(self, "background", "keyboard.svg")
     self.engine.loadSvgDrawing(self, "guy",        "pose.svg")
     self.engine.loadSvgDrawing(self, "logo",       "logo.svg")
@@ -61,9 +61,9 @@ class MainMenu(BackgroundLayer):
       (_("Import New Song"),               self.startImporter),
       (_("Import Guitar Hero(tm) Songs"),  self.startGHImporter),
     ])
-    
+
     settingsMenu = Settings.SettingsMenu(self.engine)
-    
+
     mainMenu = [
       (_("Play Game"),   self.newSinglePlayerGame),
       (_("Tutorial"),    self.showTutorial),
@@ -74,25 +74,45 @@ class MainMenu(BackgroundLayer):
     ]
     self.menu = Menu(self.engine, mainMenu, onClose = lambda: self.engine.view.popLayer(self))
 
+
+  """
+  show(self) method:
+
+  This method is responsible for initializing the main menu.
+  Calling the menu items and the background music.
+  """
   def shown(self):
     self.engine.view.pushLayer(self.menu)
     self.engine.stopServer()
 
     if self.songName:
       self.newSinglePlayerGame(self.songName)
-    
+
+  """
+  hidden(self) method:
+
+  This method is responsible for calling the next screen of the game.
+  He gradually decreases the sound of the game calls the next
+  close the current screen.
+  """
   def hidden(self):
     self.engine.view.popLayer(self.menu)
 
     if self.song:
       self.song.fadeout(1000)
-    
+
     if self.nextLayer:
       self.engine.view.pushLayer(self.nextLayer())
       self.nextLayer = None
     else:
       self.engine.quit()
 
+  """
+  quit(self) method:
+
+  This method is responsible for closing the application
+  from the main menu.
+  """
   def quit(self):
     self.engine.view.popLayer(self.menu)
 
@@ -153,7 +173,7 @@ class MainMenu(BackgroundLayer):
 
     if not address:
       return
-    
+
     self.engine.resource.load(self, "session", lambda: self.engine.connect(address))
 
     if Dialogs.showLoadingScreen(self.engine, lambda: self.session and self.session.isConnected, text = _("Connecting...")):
@@ -178,11 +198,11 @@ class MainMenu(BackgroundLayer):
 
   def run(self, ticks):
     self.time += ticks / 50.0
-    
+
   def render(self, visibility, topMost):
     self.visibility = visibility
     v = 1.0 - ((1 - visibility) ** 2)
-      
+
     t = self.time / 100
     w, h, = self.engine.view.geometry[2:4]
     r = .5
@@ -198,7 +218,7 @@ class MainMenu(BackgroundLayer):
     f2 = math.cos(t * 17) * .025
     self.logo.transform.scale(1 + f1 + (1 - v) ** 3, -1 + f2 + (1 - v) ** 3)
     self.logo.draw()
-    
+
     self.guy.transform.reset()
     self.guy.transform.translate(.75 * w + (1 - v) * 2 * w, .35 * h)
     self.guy.transform.scale(-.9, .9)
