@@ -56,6 +56,10 @@ Config.define("player", "key_cancel",   str, "K_ESCAPE", text = _("Cancel"))
 Config.define("player", "name",         str, "")
 Config.define("player", "difficulty",   int, Song.EASY_DIFFICULTY)
 
+"""
+Is class is responsible for the controls of the player in the game.
+Controls which will be the input, buttons, and the modes used.
+"""
 class Controls:
   def __init__(self):
     def keycode(name):
@@ -64,7 +68,7 @@ class Controls:
         return int(k)
       except:
         return getattr(pygame, k)
-    
+
     self.flags = 0
     self.controlMapping = {
       keycode("key_left"):      LEFT,
@@ -80,7 +84,7 @@ class Controls:
       keycode("key_5"):         KEY5,
       keycode("key_cancel"):    CANCEL,
     }
-    
+
     # Multiple key support
     self.heldKeys = {}
 
@@ -127,42 +131,42 @@ class Player(object):
     self.owner    = owner
     self.controls = Controls()
     self.reset()
-    
+
   def reset(self):
     self.score         = 0
     self._streak       = 0
     self.notesHit      = 0
     self.longestStreak = 0
     self.cheating      = False
-    
+
   def getName(self):
     return Config.get("player", "name")
-    
+
   def setName(self, name):
     Config.set("player", "name", name)
-    
+
   name = property(getName, setName)
-  
+
   def getStreak(self):
     return self._streak
-    
+
   def setStreak(self, value):
     self._streak = value
     self.longestStreak = max(self._streak, self.longestStreak)
-    
+
   streak = property(getStreak, setStreak)
-    
+
   def getDifficulty(self):
     return Song.difficulties.get(Config.get("player", "difficulty"))
-    
+
   def setDifficulty(self, difficulty):
     Config.set("player", "difficulty", difficulty.id)
-    
+
   difficulty = property(getDifficulty, setDifficulty)
-  
+
   def addScore(self, score):
     self.score += score * self.getScoreMultiplier()
-    
+
   def getScoreMultiplier(self):
     try:
       return SCORE_MULTIPLIER.index((self.streak / 10) * 10) + 1
