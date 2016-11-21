@@ -65,14 +65,14 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
     self.engine.loadSvgDrawing(self, "background", "keyboard.svg")
     Dialogs.showLoadingScreen(self.engine, lambda: self.song, text = _("Chilling..."))
 
-""""
-keyPressed(self, key, unicode) method:
+  """"
+  keyPressed(self, key, unicode) method:
 
-This method tests the input given by the user according to their key pressed.
-If RETURN the method checks the values of higshcore with the value of the score of the player.
-If the value of the player's score is higher or not. Do a test to see if the player is cheater.
-Asks the player to provide your nick. Saves the changes. And finally shows the highscore.
-"""
+  This method tests the input given by the user according to their key pressed.
+  If RETURN the method checks the values of higshcore with the value of the score of the player.
+  If the value of the player's score is higher or not. Do a test to see if the player is cheater.
+  Asks the player to provide your nick. Saves the changes. And finally shows the highscore.
+  """
   def keyPressed(self, key, unicode):
     ret = SceneClient.keyPressed(self, key, unicode)
 
@@ -100,22 +100,22 @@ Asks the player to provide your nick. Saves the changes. And finally shows the h
 
     return ret
 
-"""
-hidden(self) method:
+  """
+  hidden(self) method:
 
-This method is responsible for hiding the
-GameResult screen and call the next game screen.
-"""
+  This method is responsible for hiding the
+  GameResult screen and call the next game screen.
+  """
   def hidden(self):
     SceneClient.hidden(self)
     if self.nextScene:
       self.nextScene()
-"""
-def quit(self) method:
+  """
+  def quit(self) method:
 
   This method is responsible for close the game
   in the GameResult screen.
-"""
+  """
   def quit(self):
     self.engine.view.popLayer(self.menu)
     self.session.world.finishGame()
