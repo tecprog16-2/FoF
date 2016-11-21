@@ -31,6 +31,9 @@ import Theme
 import Dialogs
 import Player
 
+"""
+This class is responsible for the choice and the player's navigation in the main menu screen.
+"""
 class Choice:
   def __init__(self, text, callback, values = None, valueIndex = 0):
     self.text       = unicode(text)
