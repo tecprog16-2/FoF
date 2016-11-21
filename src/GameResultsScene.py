@@ -53,18 +53,26 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
     self.taunt           = None
     self.uploadingScores = False
     self.nextScene       = None
-    
+
     items = [
       (_("Replay"),            self.replay),
       (_("Change Song"),       self.changeSong),
       (_("Quit to Main Menu"), self.quit),
     ]
     self.menu = Menu(self.engine, items, onCancel = self.quit, pos = (.2, .5))
-      
+
     self.engine.resource.load(self, "song", lambda: Song.loadSong(self.engine, songName, library = self.libraryName, notesOnly = True), onLoad = self.songLoaded)
     self.engine.loadSvgDrawing(self, "background", "keyboard.svg")
     Dialogs.showLoadingScreen(self.engine, lambda: self.song, text = _("Chilling..."))
-    
+
+""""
+keyPressed(self, key, unicode) method:
+
+This method tests the input given by the user according to their key pressed.
+If RETURN the method checks the values of higshcore with the value of the score of the player.
+If the value of the player's score is higher or not. Do a test to see if the player is cheater.
+Asks the player to provide your nick. Saves the changes. And finally shows the highscore.
+"""
   def keyPressed(self, key, unicode):
     ret = SceneClient.keyPressed(self, key, unicode)
 
@@ -89,32 +97,43 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
       self.showHighscores = True
       self.engine.view.pushLayer(self.menu)
       return True
-    
+
     return ret
 
+"""
+hidden(self) method:
+
+This method is responsible for hiding the
+GameResult screen and call the next game screen.
+"""
   def hidden(self):
     SceneClient.hidden(self)
     if self.nextScene:
       self.nextScene()
-    
+"""
+def quit(self) method:
+
+  This method is responsible for close the game
+  in the GameResult screen.
+"""
   def quit(self):
     self.engine.view.popLayer(self.menu)
     self.session.world.finishGame()
-    
+
   def replay(self):
     self.engine.view.popLayer(self.menu)
     self.session.world.deleteScene(self)
     self.nextScene = lambda: self.session.world.createScene("GuitarScene", libraryName = self.libraryName, songName = self.songName)
-  
+
   def changeSong(self):
     self.engine.view.popLayer(self.menu)
     self.session.world.deleteScene(self)
     self.nextScene = lambda: self.session.world.createScene("SongChoosingScene")
-   
+
   def songLoaded(self, song):
     song.difficulty = self.player.difficulty
     notes = len([1 for time, event in song.track.getAllEvents() if isinstance(event, Song.Note)])
-    
+
     if notes:
       # 5 stars at 95%, 4 stars at 75%
       f = float(self.player.notesHit) / notes
@@ -130,7 +149,7 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
         taunt = random.choice(["jurgen2.ogg", "jurgen3.ogg", "jurgen4.ogg", "jurgen5.ogg"])
       elif self.stars == 5:
         taunt = random.choice(["perfect1.ogg", "perfect2.ogg", "perfect3.ogg"])
-        
+
       if taunt:
         self.engine.resource.load(self, "taunt", lambda: Sound(self.engine.resource.fileName(taunt)))
 
@@ -138,23 +157,23 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
     SceneClient.run(self, ticks)
     self.time    += ticks / 50.0
     self.counter += ticks
-    
+
     if self.counter > 5000 and self.taunt:
       self.taunt.setVolume(self.engine.config.get("audio", "guitarvol"))
       self.taunt.play()
       self.taunt = None
-    
+
   def anim(self, start, ticks):
     return min(1.0, float(max(start, self.counter)) / ticks)
 
   def render(self, visibility, topMost):
     SceneClient.render(self, visibility, topMost)
-    
+
     bigFont = self.engine.data.bigFont
     font    = self.engine.data.font
 
     v = ((1 - visibility) ** 2)
-    
+
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glEnable(GL_COLOR_MATERIAL)
@@ -169,16 +188,16 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
       self.background.transform.rotate(-t)
       self.background.transform.scale(math.sin(t / 8) + 2, math.sin(t / 8) + 2)
       self.background.draw()
-      
+
       if self.showHighscores:
         scale = 0.0017
         d = self.player.difficulty
-        
+
         text = _("Highest Scores (%s)") % d
         w, h = font.getStringSize(text)
         Theme.setBaseColor(1 - v)
         font.render(text, (.5 - w / 2, .05 - v))
-        
+
         x = .1
         y = .15 + v
         for i, scores in enumerate(self.song.info.getHighscores(d)):
@@ -192,7 +211,7 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
           font.render(unicode(Data.STAR2 * stars + Data.STAR1 * (5 - stars)), (x + .25, y), scale = scale * .9)
           font.render(name, (x + .5, y), scale = scale)
           y += h
-          
+
         if self.uploadingScores:
           Theme.setBaseColor(1 - v)
           if self.uploadResult is None:
@@ -208,16 +227,16 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
               text = _("Score upload failed")
           font.render(text, (.05, .7 + v), scale = 0.001)
         return
-      
+
       Theme.setBaseColor(1 - v)
       text = _("Song Finished!")
       w, h = font.getStringSize(text)
       font.render(text, (.5 - w / 2, .05 - v))
-      
+
       text = "%d" % (self.player.score * self.anim(1000, 2000))
       w, h = bigFont.getStringSize(text)
       bigFont.render(text, (.5 - w / 2, .11 + v + (1.0 - self.anim(0, 1000) ** 3)), scale = 0.0025)
-      
+
       if self.counter > 1000:
         scale = 0.0017
         text = (Data.STAR2 * self.stars + Data.STAR1 * (5 - self.stars))
@@ -226,9 +245,9 @@ class GameResultsSceneClient(GameResultsScene, SceneClient):
         for i, ch in enumerate(text):
           bigFont.render(ch, (x + 100 * (1.0 - self.anim(1000 + i * 200, 1000 + (i + 1) * 200)) ** 2, .35 + v), scale = scale)
           x += w
-      
+
       if self.counter > 2500:
-        text = _("Accuracy: %d%%") % self.accuracy      
+        text = _("Accuracy: %d%%") % self.accuracy
         w, h = font.getStringSize(text)
         font.render(text, (.5 - w / 2, .55 + v))
         text = _("Longest note streak: %d") % self.player.longestStreak
