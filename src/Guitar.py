@@ -31,6 +31,12 @@ import numpy
 
 KEYS = [Player.KEY1, Player.KEY2, Player.KEY3, Player.KEY4, Player.KEY5]
 
+"""
+This class is responsible for frets and notes will be played by the player.
+Also controls the beats per minute (BPM) given by the player.
+In short, the class is responsible for part playable of the game.
+"""
+
 class Guitar:
   def __init__(self, engine, editorMode = False):
     self.engine         = engine
