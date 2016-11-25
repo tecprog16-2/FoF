@@ -39,22 +39,22 @@ class Video:
       flags |= pygame.FULLSCREEN
     else:
       '''Do nothing'''
-      
+
     self.flags      = flags
     self.fullscreen = fullscreen
 
-    try:    
+    try:
       pygame.display.quit()
     except:
       pass
-      
+
     pygame.display.init()
-    
+    #This paragraph defines the rate of colors to be displayed in video
     pygame.display.gl_set_attribute(pygame.GL_RED_SIZE,   8)
     pygame.display.gl_set_attribute(pygame.GL_GREEN_SIZE, 8)
     pygame.display.gl_set_attribute(pygame.GL_BLUE_SIZE,  8)
     pygame.display.gl_set_attribute(pygame.GL_ALPHA_SIZE, 8)
-      
+
     if multisamples:
       pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLEBUFFERS, 1);
       pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLESAMPLES, multisamples);
@@ -85,10 +85,10 @@ class Video:
         pass
 
     return bool(self.screen)
-    
+
   def toggleFullscreen(self):
     assert self.screen
-    
+
     return pygame.display.toggle_fullscreen()
 
   def flip(self):

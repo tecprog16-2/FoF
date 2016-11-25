@@ -140,6 +140,9 @@ class View(Task):
     glPushMatrix()
     glLoadIdentity()
 
+
+
+    #This paragraph calculates the orthographic projection used view of the game.
     viewport = glGetIntegerv(GL_VIEWPORT)
     if normalize:
       widthOrthogonalProjection = viewport[2] - viewport[0]
