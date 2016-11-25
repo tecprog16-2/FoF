@@ -59,6 +59,11 @@ class Layer(object):
       visibility > 0.0 and visibility <= 1.0
     except ValueError:
       print "The value of the visibility in the class render in the Stage.py is invalid"
+
+    """
+    This paragraph calculates the height and width
+    of the stage to be rendered on the screen.
+    """
     width = 0
     height = 0
     width, height, = self.stage.engine.view.geometry[2:4]
@@ -185,6 +190,7 @@ class Effect(object):
 class LightEffect(Effect):
   def __init__(self, layer, options):
     Effect.__init__(self, layer, options)
+    #This paragraph defines the effects of light on the stage of the game.
     self.lightNumber = int(options.get("light_number", 0))
     self.ambient     = float(options.get("ambient", 0.5))
     self.contrast    = float(options.get("contrast", 0.5))
@@ -270,7 +276,7 @@ class Stage(object):
           self.textures[texture] = drawing
 
         layer = Layer(self, drawing)
-
+        #This paragraph defines the properties of the layer of the stage.
         layer.position    = (get("xpos",   float, 0.0), get("ypos",   float, 0.0))
         layer.scale       = (get("xscale", float, 1.0), get("yscale", float, 1.0))
         layer.angle       = math.pi * get("angle", float, 0.0) / 180.0
