@@ -77,16 +77,26 @@ class Editor(Layer, KeyListener):
     self.menu = Menu(self.engine, mainMenu)
 
   def save(self):
+    #Checks whether the editor made a change or not.
     if not self.modified:
+      """
+      If the editor has not made any change in sound editing for FOF,
+      Displays the message that there are no changes to be saved.
+      """
       Dialogs.showMessage(self.engine, _("There are no changes to save."))
       return
 
     def save():
+      #The sound first edited is saved.
       self.song.save()
+      #If you turn off the changes.
       self.modified = False
 
+    #Activates the section that allows the file to be saved.
     self.engine.resource.load(function = save)
+    #Loads the loading screen with their texts.
     Dialogs.showLoadingScreen(self.engine, lambda: not self.modified, text = _("Saving..."))
+    #Loads the message indicating that the file was saved.
     Dialogs.showMessage(self.engine, _("'%s' saved.") % self.song.info.name)
 
   def help(self):
