@@ -30,7 +30,18 @@ class TestLayer(Layer):
     self.text = None
     self.engine = engine
 
+
   def run(self, ticks):
+    """
+    This next control structure is responsible
+    to ensure that there is some text at the
+    moment in the unit test of dialogues is called.
+    If there are no texts she passes a standard text.
+    Is next control structure uses existence
+    of the value of the size of the texture to
+    This is converted and used at the time
+    in the screen need to be drawn.
+    """
     if not self.text:
       self.text = "tmp"
       self.text = getText(self.engine, "Enter name:", "Wario")
@@ -47,6 +58,10 @@ class DialogTestInteractive(unittest.TestCase):
   def tearDown(self):
     self.e.quit()
 
+"""
+This next control structure check whether
+to start the unit tests on the main of the game.
+"""
 if __name__ == "__main__":
   unittest.main()
 else:
