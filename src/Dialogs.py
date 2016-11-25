@@ -148,8 +148,6 @@ class GetText(Layer, KeyListener):
 
   def keyPressed(self, key, unicode):
     self.time = 0
-    The following paragraph tests which key is being pressed by the player
-    and call their respective actions.
     c = self.engine.input.controls.getMapping(key)
     if (c in [Player.KEY1] or key == pygame.K_RETURN) and not self.accepted:
       self.engine.view.popLayer(self)
