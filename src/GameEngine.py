@@ -79,8 +79,12 @@ class FullScreenSwitcher(KeyListener):
   def __init__(self, engine):
     self.engine = engine
     self.altStatus = False
-  
+
   def keyPressed(self, key, unicode):
+    """
+    The following paragraph tests which key is being pressed by the player
+    and call their respective actions.
+    """
     if key == pygame.K_LALT:
       self.altStatus = True
     elif key == pygame.K_RETURN and self.altStatus:
@@ -97,7 +101,7 @@ class FullScreenSwitcher(KeyListener):
   def keyReleased(self, key):
     if key == pygame.K_LALT:
       self.altStatus = False
-      
+
 class SystemEventHandler(SystemEventListener):
   """
   A system event listener that takes care of restarting the game when needed
@@ -108,10 +112,10 @@ class SystemEventHandler(SystemEventListener):
 
   def screenResized(self, size):
     self.engine.resizeScreen(size[0], size[1])
-    
+
   def restartRequested(self):
     self.engine.restart()
-    
+
   def quit(self):
     self.engine.quit()
 
@@ -126,15 +130,15 @@ class GameEngine(Engine):
 
     if not config:
       config = Config.load()
-      
+
     self.config  = config
-    
+
     fps          = self.config.get("video", "fps")
     tickrate     = self.config.get("engine", "tickrate")
     Engine.__init__(self, fps = fps, tickrate = tickrate)
-    
+
     pygame.init()
-    
+
     self.title             = _("Frets on Fire")
     self.restartRequested  = False
     self.handlingException = False
@@ -146,7 +150,7 @@ class GameEngine(Engine):
     bits         = self.config.get("audio", "bits")
     stereo       = self.config.get("audio", "stereo")
     bufferSize   = self.config.get("audio", "buffersize")
-    
+
     self.audio.pre_open(frequency = frequency, bits = bits, stereo = stereo, bufferSize = bufferSize)
     pygame.init()
     self.audio.open(frequency = frequency, bits = bits, stereo = stereo, bufferSize = bufferSize)
@@ -178,7 +182,7 @@ class GameEngine(Engine):
     self.server    = None
     self.sessions  = []
     self.mainloop  = self.loading
-    
+
     # Load game modifications
     Mod.init(self)
     theme = Config.load(self.resource.fileName("theme.ini"))
@@ -193,7 +197,7 @@ class GameEngine(Engine):
     self.addTask(self.view)
     self.addTask(self.resource, synchronized = False)
     self.data = Data(self.resource, self.svg)
-    
+
     self.input.addKeyListener(FullScreenSwitcher(self), priority = True)
     self.input.addSystemEventListener(SystemEventHandler(self))
 
@@ -214,7 +218,7 @@ class GameEngine(Engine):
 
   def isDebugModeEnabled(self):
     return bool(self.debugLayer)
-    
+
   def setDebugModeEnabled(self, enabled):
     """
     Show or hide the debug layer.
@@ -225,7 +229,7 @@ class GameEngine(Engine):
       self.debugLayer = DebugLayer(self)
     else:
       self.debugLayer = None
-    
+
   def toggleFullscreen(self):
     """
     Toggle between fullscreen and windowed mode.
@@ -239,7 +243,7 @@ class GameEngine(Engine):
       return True
     self.config.set("video", "fullscreen", self.video.fullscreen)
     return True
-    
+
   def restart(self):
     """Restart the game."""
     if not self.restartRequested:
@@ -249,7 +253,7 @@ class GameEngine(Engine):
         # evilynux - With self.audio.close(), calling self.quit() results in
         #            a crash. Calling the parent directly as a workaround.
         Engine.quit(self)
-    
+
   def quit(self):
     self.audio.close()
     Engine.quit(self)
@@ -263,7 +267,7 @@ class GameEngine(Engine):
     """
     self.view.setGeometry((0, 0, width, height))
     self.svg.setGeometry((0, 0, width, height))
-    
+
   def isServerRunning(self):
     return bool(self.server)
 
@@ -309,7 +313,7 @@ class GameEngine(Engine):
   def loadSvgDrawing(self, target, name, fileName, textureSize = None):
     """
     Load an SVG drawing synchronously.
-    
+
     @param target:      An object that will own the drawing
     @param name:        The name of the attribute the drawing will be assigned to
     @param fileName:    The name of the file in the data directory
@@ -323,7 +327,7 @@ class GameEngine(Engine):
     """Loading state loop."""
     done = Engine.run(self)
     self.clearScreen()
-    
+
     if self.data.essentialResourcesLoaded():
       if not self.loadingScreenShown:
         self.loadingScreenShown = True
@@ -346,7 +350,7 @@ class GameEngine(Engine):
       self.boostBackgroundThreads(False)
     else:
       self.boostBackgroundThreads(True)
-    
+
     done = Engine.run(self)
     self.clearScreen()
     self.view.render()
@@ -382,7 +386,7 @@ class GameEngine(Engine):
 
       clearMatrixStack(GL_PROJECTION)
       clearMatrixStack(GL_MODELVIEW)
-      
+
       Dialogs.showMessage(self, unicode(e))
       self.handlingException = False
       return True

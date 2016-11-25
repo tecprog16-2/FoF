@@ -222,6 +222,10 @@ class Editor(Layer, KeyListener):
     self.engine.view.popLayer(self.menu)
 
   def keyPressed(self, key, unicode):
+    """
+    The following paragraph tests which key is being pressed by the player
+    and call their respective actions.
+    """
     c = self.engine.input.controls.getMapping(key)
     if c == Player.CANCEL:
       self.engine.view.pushLayer(self.menu)
