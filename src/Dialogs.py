@@ -84,6 +84,7 @@ def wrapText(font = None, positionText = None, text = None, rightMargin = 0.9, s
 
     glPushMatrix()
 
+    #The paragraph following the dimensions and postures text that will be displayed in game.
     constQuadrant = -45
     numberWordRotation = numberWord + 1
     degreeRotation = visibility * numberWordRotation * constQuadrant
@@ -291,7 +292,7 @@ class LoadingScreen(Layer, KeyListener):
     try:
       v = (1 - visibility) ** 2
       fadeScreen(v)
-
+      #This paragraph carries the information of the image to be rendered.
       w, h = self.engine.view.geometry[2:4]
       self.engine.data.loadingImage.transform.reset()
       self.engine.data.loadingImage.transform.translate(w / 2, (1.0 - v * .25) * h / 2)
