@@ -38,6 +38,7 @@ radianToAngle = angleForConvertion / numberPi
 
 # Convert a string to a float if the value exists
 def ToFloat(val):
+
 	if val is None or val == '':
 		return None
 	else:

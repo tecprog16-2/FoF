@@ -2,7 +2,7 @@
 # -*- coding: iso-8859-1 -*-                                        #
 #                                                                   #
 # Frets on Fire                                                     #
-# Copyright (C) 2006 Sami Kyöstilä                                  #
+# Copyright (C) 2006 Sami KyÃ¶stilÃ¤                                  #
 #                                                                   #
 # This program is free software; you can redistribute it and/or     #
 # modify it under the terms of the GNU General Public License       #
@@ -60,6 +60,11 @@ class Text(Element):
     return self.size[1]
 
   def render(self, offset):
+
+    """
+  This control structure is responsible for the position in which the texts
+  will be rendered on screen credits.
+    """
     if self.alignment == "left":
       x = .1
     elif self.alignment == "right":
@@ -210,6 +215,14 @@ class Credits(Layer, KeyListener):
     self.engine.input.addKeyListener(self)
 
   def hidden(self):
+    """
+  If a sound is being played in the credits
+  the following control structure decreases its volume
+  gradually.
+  Otherwise the control structure calls the methods
+  removing the possibility of the player using a key
+  the control and what he calls the main menu.
+    """
     if self.song:
       self.song.fadeout(1000)
     else:
