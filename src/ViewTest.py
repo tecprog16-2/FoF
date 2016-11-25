@@ -26,11 +26,15 @@ from View import View, Layer
 
 class TestLayer(Layer):
   def __init__(self):
+    #Define a layer does not have visibility.
     self.visibility = 0
+    #Remove the top most
     self.topMost = False
-    
+
   def render(self, visibility, topMost):
+    #When you render the image to be tested, the visibidade receives the value received by this method.
     self.visibility = visibility
+    #When you render the image to be tested, the top most receives the value received by this method.
     self.topMost = topMost
 
   def __repr__(self):
@@ -42,28 +46,29 @@ class ViewTest(unittest.TestCase):
     l2 = TestLayer()
     l3 = TestLayer()
     v = self.e.view
-    
+
     v.pushLayer(l1)
     v.pushLayer(l2)
     v.pushLayer(l3)
-    
+
     while l3.visibility < 1.0:
       self.e.run()
-      
+
     v.popLayer(l3)
     v.popLayer(l2)
     v.popLayer(l1)
-    
+
     while l1 in v.layers or l2 in v.layers or l3 in v.layers:
       self.e.run()
 
     assert not v.layers
-      
+
   def setUp(self):
     self.e = GameEngine()
-    
+
   def tearDown(self):
     self.e.quit()
 
+#Starts the test if the variable name is "__main__"
 if __name__ == "__main__":
   unittest.main()
