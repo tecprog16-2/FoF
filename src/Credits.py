@@ -85,32 +85,32 @@ class Picture(Element):
 
   def render(self, offset):
 
-    #Resets the drawings being rendered.
+
     self.drawing.transform.reset()
 
-    #Define um ponto médio para a proxima renderização.
+
     for_midle = .5
-    #Sets a midpoint for the next rendering.
+
     width, height = self.engine.view.geometry[2:4]
-    #Transforms the value of the width to float.
+
     float_width = float(width)
-    #Transforms the height value to float.
+
     float_height = float(height)
-    #Calculates the rate of height of the object according to the midpoint and displacement.
+
     height_tax_object = for_midle * self.height + offset
-    #Calculates the width rendering according to the midpoint.
+
     final_render_width = for_midle * width
-    #Starts the calculation of the final height of the rendering time. Using the rates before calculated.
+
     final_render_height = height - height_tax_object * height * float_width
-    #Ends-if calculating final height for rendering the value of time.
+
     final_render_height = final_render_height / float_height
 
 
-    #The calculated values are used to make the translation of the drawing to be transformed.
+
     self.drawing.transform.translate(final_render_width, final_render_height)
-    #Defines the scale used to render the image.
+
     self.drawing.transform.scale(1, -1)
-    #Finally, there is the image on the screen.
+
     self.drawing.draw()
 
 class Credits(Layer, KeyListener):
