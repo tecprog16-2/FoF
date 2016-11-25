@@ -61,6 +61,12 @@ class Data(object):
     scale     = Config.get("video", "fontscale")
     fontSize  = [22, 108]
 
+    """
+    This structure of control verifies that the application data
+    are configured using only the ASCII table.
+    Case is using the default settings.
+    Otherwise other settings are used.
+    """
     if asciiOnly:
       font    = resource.fileName("default.ttf")
       bigFont = resource.fileName("title.ttf")
@@ -104,6 +110,13 @@ class Data(object):
     """
     fileName = self.resource.fileName(fileName)
     drawing  = self.resource.load(target, name, lambda: SvgDrawing(self.svg, fileName), synch = True)
+
+    """
+    Is next control structure uses existence
+    of the value of the size of the texture to
+    This is converted and used at the time
+    in the screen need to be drawn.
+    """
     if textureSize:
       drawing.convertToTexture(textureSize[0], textureSize[1])
     return drawing
