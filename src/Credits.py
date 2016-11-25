@@ -135,6 +135,10 @@ class Credits(Layer, KeyListener):
     c2 = (1, .75, 0, 1)
 
     space = Text(nf, hs, c1, "center", " ")
+    """
+    This paragraph the following defines all texts and their positions
+    that will appear on the screen of credits
+    """
     self.credits = [
       Text(nf, ns, c2, "center", _("Unreal Voodoo")),
       Text(nf, ns, c1, "center", _("presents")),
