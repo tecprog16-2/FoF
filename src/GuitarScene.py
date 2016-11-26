@@ -71,9 +71,9 @@ class GuitarSceneClient(GuitarScene, SceneClient):
 
     self.loadSettings()
     self.engine.resource.load(self, "song",          lambda: loadSong(self.engine, songName, library = libraryName), onLoad = self.songLoaded)
-    
+
     self.stage            = Stage.Stage(self, self.engine.resource.fileName("stage.ini"))
-    
+
     self.engine.loadSvgDrawing(self, "fx2x",   "2x.svg", textureSize = (256, 256))
     self.engine.loadSvgDrawing(self, "fx3x",   "3x.svg", textureSize = (256, 256))
     self.engine.loadSvgDrawing(self, "fx4x",   "4x.svg", textureSize = (256, 256))
@@ -93,6 +93,11 @@ class GuitarSceneClient(GuitarScene, SceneClient):
 
     self.restartSong()
 
+
+
+
+# Paragraph responsible for pausing and resuming the game:
+
   def pauseGame(self):
     if self.song:
       self.song.pause()
@@ -102,27 +107,10 @@ class GuitarSceneClient(GuitarScene, SceneClient):
     if self.song:
       self.song.unpause()
 
-  def loadSettings(self):
-    self.delay            = self.engine.config.get("audio", "delay")
-    self.screwUpVolume    = self.engine.config.get("audio", "screwupvol")
-    self.guitarVolume     = self.engine.config.get("audio", "guitarvol")
-    self.songVolume       = self.engine.config.get("audio", "songvol")
-    self.rhythmVolume     = self.engine.config.get("audio", "rhythmvol")
-    self.guitar.leftyMode = self.engine.config.get("game",  "leftymode")
 
-    if self.song:
-      self.song.setBackgroundVolume(self.songVolume)
-      self.song.setRhythmVolume(self.rhythmVolume)
-    
-  def songLoaded(self, song):
-    song.difficulty = self.player.difficulty
-    self.delay += song.info.delay
 
-    # If tapping is disabled, remove the tapping indicators
-    if not self.engine.config.get("game", "tapping"):
-      for time, event in self.song.track.getAllEvents():
-        if isinstance(event, Note):
-          event.tappable = False
+
+# Paragraph responsible for start and stop the guitar scene:
 
   def quit(self):
     if self.song:
@@ -132,29 +120,7 @@ class GuitarSceneClient(GuitarScene, SceneClient):
     self.engine.view.popLayer(self.menu)
     self.session.world.finishGame()
 
-  def changeSong(self):
-    if self.song:
-      self.song.stop()
-      self.song  = None
-    self.engine.view.popLayer(self.menu)
-    self.session.world.deleteScene(self)
-    self.session.world.createScene("SongChoosingScene")
 
-  def restartSong(self):
-    self.engine.data.startSound.play()
-    self.engine.view.popLayer(self.menu)
-    self.player.reset()
-    self.stage.reset()
-    self.enteredCode     = []
-    self.autoPlay        = False
-    self.engine.collectGarbage()
-    
-    if not self.song:
-      return
-      
-    self.countdown    = 8.0
-    self.guitar.endPick(0)
-    self.song.stop()
 
   def run(self, ticks):
     SceneClient.run(self, ticks)
@@ -168,11 +134,11 @@ class GuitarSceneClient(GuitarScene, SceneClient):
       if self.countdown <= 0 and not self.song.isPlaying() and not self.done:
         self.goToResults()
         return
-        
+
       if self.autoPlay:
         notes = self.guitar.getRequiredNotes(self.song, pos)
         notes = [note.number for time, note in notes]
-        
+
         changed = False
         held = 0
         for n, k in enumerate(KEYS):
@@ -186,7 +152,7 @@ class GuitarSceneClient(GuitarScene, SceneClient):
             held += 1
         if changed and held:
           self.doPick()
-      
+
       self.song.update(ticks)
       if self.countdown > 0:
         self.guitar.setBPM(self.song.bpm)
@@ -215,75 +181,10 @@ class GuitarSceneClient(GuitarScene, SceneClient):
       if self.guitar.controlsMatchNotes(self.controls, notes):
         self.doPick()
 
-  def endPick(self):
-    score = self.getExtraScoreForCurrentlyPlayedNotes()
-    if not self.guitar.endPick(self.song.getPosition()):
-      self.song.setGuitarVolume(0.0)
-    self.player.addScore(score)
 
-  def render3D(self):
-    self.stage.render(self.visibility)
-    
-  def renderGuitar(self):
-    self.guitar.render(self.visibility, self.song, self.getSongPosition(), self.controls)
 
-  def getSongPosition(self):
-    if self.song:
-      if not self.done:
-        self.lastSongPos = self.song.getPosition()
-        return self.lastSongPos - self.countdown * self.song.period - self.delay
-      else:
-        # Nice speeding up animation at the end of the song
-        return self.lastSongPos + 4.0 * (1 - self.visibility) * self.song.period - self.delay
-    return 0.0
-    
-  def doPick(self):
-    if not self.song:
-      return
 
-    pos = self.getSongPosition()
-    
-    if self.guitar.playedNotes:
-      # If all the played notes are tappable, there are no required notes and
-      # the last note was played recently enough, ignore this pick
-      if self.guitar.areNotesTappable(self.guitar.playedNotes) and \
-         not self.guitar.getRequiredNotes(self.song, pos) and \
-         pos - self.lastPickPos <= self.song.period / 2:
-        return
-      self.endPick()
-
-    self.lastPickPos = pos
-
-    if self.guitar.startPick(self.song, pos, self.controls):
-      self.song.setGuitarVolume(self.guitarVolume)
-      self.player.streak += 1
-      self.player.notesHit += len(self.guitar.playedNotes)
-      self.player.addScore(len(self.guitar.playedNotes) * 50)
-      self.stage.triggerPick(pos, [n[1].number for n in self.guitar.playedNotes])
-      if self.player.streak % 10 == 0:
-        self.lastMultTime = pos
-    else:
-      self.song.setGuitarVolume(0.0)
-      self.player.streak = 0
-      self.stage.triggerMiss(pos)
-      self.sfxChannel.play(self.engine.data.screwUpSound)
-      self.sfxChannel.setVolume(self.screwUpVolume)
-        
-  def toggleAutoPlay(self):
-    self.autoPlay = not self.autoPlay
-    if self.autoPlay:
-      Dialogs.showMessage(self.engine, _("Jurgen will show you how it is done."))
-    else:
-      Dialogs.showMessage(self.engine, _("Jurgen has left the building."))
-    return self.autoPlay
-
-  def goToResults(self):
-    if self.song:
-      self.song.stop()
-      self.song  = None
-      self.done  = True
-      self.session.world.deleteScene(self)
-      self.session.world.createScene("GameResultsScene", libraryName = self.libraryName, songName = self.songName)
+# Paragraph responsible for keybord or simply the keys:
 
   def keyPressed(self, key, unicode):
     control = self.controls.keyPressed(key)
@@ -296,7 +197,7 @@ class GuitarSceneClient(GuitarScene, SceneClient):
       else:
         self.keyBurstTimeout = self.engine.timer.time + self.keyBurstPeriod
         return True
-      
+
     if control in (Player.ACTION1, Player.ACTION2) and self.song:
       self.doPick()
     elif control in KEYS and self.song:
@@ -326,16 +227,6 @@ class GuitarSceneClient(GuitarScene, SceneClient):
             break
       else:
         self.enteredCode = []
-    
-  def getExtraScoreForCurrentlyPlayedNotes(self):
-    if not self.song:
-      return 0
- 
-    noteCount  = len(self.guitar.playedNotes)
-    pickLength = self.guitar.getPickLength(self.getSongPosition())
-    if pickLength > 1.1 * self.song.period / 4:
-      return int(.1 * pickLength * noteCount)
-    return 0
 
   def keyReleased(self, key):
     if self.controls.keyReleased(key) in KEYS and self.song:
@@ -349,12 +240,74 @@ class GuitarSceneClient(GuitarScene, SceneClient):
       # Otherwise we end the pick if the notes have been playing long enough
       elif self.lastPickPos is not None and pos - self.lastPickPos > self.song.period / 2:
         self.endPick()
+
+
+
+
+#Paragraph  responsible for the sounds of the guitar scene:
+
+  def songLoaded(self, song):
+    song.difficulty = self.player.difficulty
+    self.delay += song.info.delay
+
+    # If tapping is disabled, remove the tapping indicators
+    if not self.engine.config.get("game", "tapping"):
+      for time, event in self.song.track.getAllEvents():
+        if isinstance(event, Note):
+          event.tappable = False
+  def changeSong(self):
+    if self.song:
+      self.song.stop()
+      self.song  = None
+    self.engine.view.popLayer(self.menu)
+    self.session.world.deleteScene(self)
+    self.session.world.createScene("SongChoosingScene")
+
+  def restartSong(self):
+    self.engine.data.startSound.play()
+    self.engine.view.popLayer(self.menu)
+    self.player.reset()
+    self.stage.reset()
+    self.enteredCode     = []
+    self.autoPlay        = False
+    self.engine.collectGarbage()
+
+    if not self.song:
+      return
+
+    self.countdown    = 8.0
+    self.guitar.endPick(0)
+    self.song.stop()
+
+  def getSongPosition(self):
+    if self.song:
+      if not self.done:
+        self.lastSongPos = self.song.getPosition()
+        return self.lastSongPos - self.countdown * self.song.period - self.delay
+      else:
+        # Nice speeding up animation at the end of the song
+        return self.lastSongPos + 4.0 * (1 - self.visibility) * self.song.period - self.delay
+    return 0.0
+
+
+
+
+
+
+# Paragraph responsible for rendering the objects of the guitar scene:
+
+  def render3D(self):
+    self.stage.render(self.visibility)
+
+  def renderGuitar(self):
+    self.guitar.render(self.visibility, self.song, self.getSongPosition(), self.controls)
+
   def render(self, visibility, topMost):
     SceneClient.render(self, visibility, topMost)
-    
+
     font    = self.engine.data.font
     bigFont = self.engine.data.bigFont
-      
+
     self.visibility = v = 1.0 - ((1 - visibility) ** 2)
 
     self.engine.view.setOrthogonalProjection(normalize = True)
@@ -381,7 +334,7 @@ class GuitarSceneClient(GuitarScene, SceneClient):
         Dialogs.wrapText(font, (.05, .05 - h / 2), self.song.info.name + " \n " + self.song.info.artist, rightMargin = .6, scale = 0.0015)
 
       Theme.setSelectedColor()
-      
+
       font.render("%d" % (self.player.score + self.getExtraScoreForCurrentlyPlayedNotes()),  (.6, y))
       font.render("%dx" % self.player.getScoreMultiplier(), (.6, y + h))
 
@@ -416,7 +369,7 @@ class GuitarSceneClient(GuitarScene, SceneClient):
         glColor3f(1, .5, .5)
       else:
         glColor3f(.5, 1, .5)
-        
+
       s = min(39, self.player.streak) % 10 + 1
       font.render(Data.BALL2 * s + Data.BALL1 * (10 - s),   (.67, y + h * 1.3), scale = 0.0011)
 
@@ -439,9 +392,9 @@ class GuitarSceneClient(GuitarScene, SceneClient):
           elif m == 4:
             texture = self.fx4x.texture
             c = (.5, .5, 1)
-            
+
           f = (1.0 - abs(self.song.period * 1 - diff) / (self.song.period * 1)) ** 2
-          
+
           # Flash the screen
           glBegin(GL_TRIANGLE_STRIP)
           glColor4f(c[0], c[1], c[2], (f - .5) * 1)
@@ -453,16 +406,16 @@ class GuitarSceneClient(GuitarScene, SceneClient):
           glColor4f(c[0], c[1], c[2], (f - .5) * .25)
           glVertex2f(1, 1)
           glEnd()
-            
+
           if texture:
             glPushMatrix()
             glEnable(GL_TEXTURE_2D)
             texture.bind()
             size = (texture.pixelSize[0] * .002, texture.pixelSize[1] * .002)
-            
+
             glTranslatef(.5, .15, 0)
             glBlendFunc(GL_SRC_ALPHA, GL_ONE)
-            
+
             f = .5 + .5 * (diff / self.song.period) ** 3
             glColor4f(1, 1, 1, min(1, 2 - f))
             glBegin(GL_TRIANGLE_STRIP)
@@ -475,10 +428,10 @@ class GuitarSceneClient(GuitarScene, SceneClient):
             glTexCoord2f(1.0, 1.0)
             glVertex2f( size[0] * f,  size[1] * f)
             glEnd()
-            
+
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
             glPopMatrix()
- 
+
       # show the comments
       if self.song and self.song.info.tutorial:
         glColor3f(1, 1, 1)
@@ -487,13 +440,13 @@ class GuitarSceneClient(GuitarScene, SceneClient):
           if isinstance(event, PictureEvent):
             if pos < time or pos > time + event.length:
               continue
-            
+
             try:
               picture = event.picture
             except:
               self.engine.loadSvgDrawing(event, "picture", os.path.join(self.libraryName, self.songName, event.fileName))
               picture = event.picture
-              
+
             w, h, = self.engine.view.geometry[2:4]
             fadePeriod = 500.0
             f = (1.0 - min(1.0, abs(pos - time) / fadePeriod) * min(1.0, abs(pos - time - event.length) / fadePeriod)) ** 2
@@ -508,3 +461,89 @@ class GuitarSceneClient(GuitarScene, SceneClient):
               font.render(text, (.5 - w / 2, .67))
     finally:
       self.engine.view.resetProjection()
+
+
+
+
+#Paragraph responsible for the pick of the guitar scene:
+
+  def endPick(self):
+    score = self.getExtraScoreForCurrentlyPlayedNotes()
+    if not self.guitar.endPick(self.song.getPosition()):
+      self.song.setGuitarVolume(0.0)
+    self.player.addScore(score)
+
+  def doPick(self):
+    if not self.song:
+      return
+
+    pos = self.getSongPosition()
+
+    if self.guitar.playedNotes:
+      # If all the played notes are tappable, there are no required notes and
+      # the last note was played recently enough, ignore this pick
+      if self.guitar.areNotesTappable(self.guitar.playedNotes) and \
+         not self.guitar.getRequiredNotes(self.song, pos) and \
+         pos - self.lastPickPos <= self.song.period / 2:
+        return
+      self.endPick()
+
+    self.lastPickPos = pos
+
+    if self.guitar.startPick(self.song, pos, self.controls):
+      self.song.setGuitarVolume(self.guitarVolume)
+      self.player.streak += 1
+      self.player.notesHit += len(self.guitar.playedNotes)
+      self.player.addScore(len(self.guitar.playedNotes) * 50)
+      self.stage.triggerPick(pos, [n[1].number for n in self.guitar.playedNotes])
+      if self.player.streak % 10 == 0:
+        self.lastMultTime = pos
+    else:
+      self.song.setGuitarVolume(0.0)
+      self.player.streak = 0
+      self.stage.triggerMiss(pos)
+      self.sfxChannel.play(self.engine.data.screwUpSound)
+      self.sfxChannel.setVolume(self.screwUpVolume)
+
+
+
+
+# Paragraph responsible for other actions:
+
+  def loadSettings(self):
+    self.delay            = self.engine.config.get("audio", "delay")
+    self.screwUpVolume    = self.engine.config.get("audio", "screwupvol")
+    self.guitarVolume     = self.engine.config.get("audio", "guitarvol")
+    self.songVolume       = self.engine.config.get("audio", "songvol")
+    self.rhythmVolume     = self.engine.config.get("audio", "rhythmvol")
+    self.guitar.leftyMode = self.engine.config.get("game",  "leftymode")
+
+    if self.song:
+      self.song.setBackgroundVolume(self.songVolume)
+      self.song.setRhythmVolume(self.rhythmVolume)
+
+  def toggleAutoPlay(self):
+    self.autoPlay = not self.autoPlay
+    if self.autoPlay:
+      Dialogs.showMessage(self.engine, _("Jurgen will show you how it is done."))
+    else:
+      Dialogs.showMessage(self.engine, _("Jurgen has left the building."))
+    return self.autoPlay
+
+  def goToResults(self):
+    if self.song:
+      self.song.stop()
+      self.song  = None
+      self.done  = True
+      self.session.world.deleteScene(self)
+      self.session.world.createScene("GameResultsScene", libraryName = self.libraryName, songName = self.songName)
+
+  def getExtraScoreForCurrentlyPlayedNotes(self):
+    if not self.song:
+      return 0
+
+    noteCount  = len(self.guitar.playedNotes)
+    pickLength = self.guitar.getPickLength(self.getSongPosition())
+    if pickLength > 1.1 * self.song.period / 4:
+      return int(.1 * pickLength * noteCount)
+    return 0
