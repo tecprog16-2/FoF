@@ -54,6 +54,10 @@ class Font:
     self.font.set_italic(italic)
     self.font.set_underline(underline)
 
+
+
+#Paragraph responsible for editing texts and sources:
+
   def getStringSize(self, text, scale = 0.002):
     """
     Get the dimensions of a string when rendered with this font.
@@ -100,18 +104,10 @@ class Font:
     assert type(lineSpacingOfFont) is float and lineSpacingOfFont is not None, "Invalid line spacing!"
     return lineSpacingOfFont
 
-  def setCustomGlyph(self, character, texture):
-    """
-    Replace a character with a texture.
 
-    @param character:   Character to replace
-    @param texture:     L{Texture} instance
-    """
-    texture.setFilter(GL_LINEAR, GL_LINEAR)
-    texture.setRepeat(GL_CLAMP, GL_CLAMP)
-    self.glyphCache[character]     = (texture, (0.0, 0.0, texture.size[0], texture.size[1]))
-    s = .75 * self.getHeight() / float(texture.pixelSize[0])
-    self.glyphSizeCache[character] = (texture.pixelSize[0] * s, texture.pixelSize[1] * s)
+
+
+#Paragraph responsible for rendering the text and sources:
 
   def _renderString(self, text, pos, direction, scale):
     if not text:
@@ -202,6 +198,26 @@ class Font:
     glDisableClientState(GL_VERTEX_ARRAY)
     glDisableClientState(GL_TEXTURE_COORD_ARRAY)
     glDisable(GL_TEXTURE_2D)
+
+
+
+
+#Paragraph responsible for Glyph:
+
+  def setCustomGlyph(self, character, texture):
+    """
+    Replace a character with a texture.
+
+    @param character:   Character to replace
+    @param texture:     L{Texture} instance
+    """
+    texture.setFilter(GL_LINEAR, GL_LINEAR)
+    texture.setRepeat(GL_CLAMP, GL_CLAMP)
+    self.glyphCache[character]     = (texture, (0.0, 0.0, texture.size[0], texture.size[1]))
+    s = .75 * self.getHeight() / float(texture.pixelSize[0])
+    self.glyphSizeCache[character] = (texture.pixelSize[0] * s, texture.pixelSize[1] * s)
+
+
 
   def _allocateGlyphTexture(self):
     t = TextureAtlas(size = glGetInteger(GL_MAX_TEXTURE_SIZE))
