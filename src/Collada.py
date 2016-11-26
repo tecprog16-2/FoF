@@ -175,6 +175,8 @@ def MatrixToString(mat, nDigits):
 		result += '\n\t'
 		for i in vec:
 			result += str(round(i, nDigits))+' '
+			    assert type(result) is srt, "The result of the convert matrix to string must be a string"
+    			    assert len(result) > 0, "An error occurred while converting the string. There is no string with the size smaller than zero."
 
 	return result+'\n'
 
@@ -3158,8 +3160,12 @@ def AppendTextInChild(xmlNode, object):
 		text.data = round(object, ROUND)
 	elif type(object) == bool:
 		text.data = str(object).lower()
+		    assert type(text.data) is srt, "The text.data must be a string"
+   		    assert len(text.data) > 0, "An error occurred while converting the string. There is no string with the size smaller than zero."
 	else:
 		text.data = str(object)
+		assert type(text.data) is srt, "The text.data must be a string"
+    		assert len(text.data) > 0, "An error occurred while converting the string. There is no string with the size smaller than zero."
 	xmlNode.appendChild(text)
 	return xmlNode
 

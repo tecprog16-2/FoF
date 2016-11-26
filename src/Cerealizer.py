@@ -301,6 +301,9 @@ class FloatHandler(RefHandler):
 class ComplexHandler(RefHandler):
   def dump_ref (self, obj, dumper, s):
     c = str(obj)
+    assert type(c) is srt, "The complex Handler must be a string"
+    assert len(c) > 0, "An error occurred while converting the string. There is no string with the size smaller than zero."
+
     if c.startswith("("): c = c[1:-1] # complex("(1+2j)") doesn't work
     s.write("c%s\n" % c)
 
