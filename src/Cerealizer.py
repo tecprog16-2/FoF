@@ -164,8 +164,7 @@ class Dumper(object):
     if s.read(8) != "cereal1\n": raise NotCerealizerFileError("Not a cerealizer file!")
 
     nb = int(s.readline())
-    assert type(nb) is integer, "The result of the conversion of the number into an integer must be an integer"
-    assert len(nb) != None, "An error occurred while converting the integer."
+    assert type(nb) is int, "The result of the conversion of the number into an integer must be an integer"
 
     self.id2obj = [ None ] * nb  # DO NOT DO  self.id2obj = [comprehension list], since undump_ref may access id2obj during its construction
     for i in range(nb):

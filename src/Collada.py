@@ -49,14 +49,28 @@ def ToInt(val):
 	if val is None or val == '':
 		return None
 	else:
-		return int(val)
+		value = int(val)
+		assert type(value) is int, "The value after convertion to integer must be a integer number."
+		return value
+
 
 # Convert a string to a list of 3 floats e.g '1.0 2.0 3.0' -> [1.0, 2.0, 3.0]
 def ToFloat3(stringValue):
 	if stringValue is None:
 		return None
 	split = stringValue.split( )
-	return [ float( split[ 0 ] ), float( split[ 1 ] ), float( split[ 2 ] ) ]
+	firtValueSplit = float(split[0])
+	assert type(firtValueSplit) is float, "The value after convertion to float must be a float number."
+
+	secondValueSplit = float(split[1])
+	assert type(secondValueSplit) is float, "The value after convertion to float must be a float number."
+
+	thirdValueSplit = float(split[2])
+	assert type(thirdValueSplit) is float, "The value after convertion to float must be a float number."
+
+	floatFinalNumber = [firtValueSplit, secondValueSplit, thirdValueSplit]
+
+	return floatFinalNumber
 
 # Convert a string to a list of 2 floats e.g '1.0 2.0' -> [1.0, 2.0]
 def ToFloat2(stringValue, errorText=''):
