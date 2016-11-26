@@ -38,15 +38,17 @@ class Engine:
     self.paused = []
     self.running = True
 
-  def quit(self):
-    for t in list(self.tasks + self.frameTasks):
-      self.removeTask(t)
-    self.running = False
+
+
+
+
+
+#Paragraph responsible for tasks:
 
   def addTask(self, task, synchronized = True):
     """
     Add a task to the engine.
-    
+
     @param task:          L{Task} to add
     @type  synchronized:  bool
     @param synchronized:  If True, the task will be run with small
@@ -57,7 +59,7 @@ class Engine:
       queue = self.tasks
     else:
       queue = self.frameTasks
-      
+
     if not task in queue:
       queue.append(task)
       task.started()
@@ -65,7 +67,7 @@ class Engine:
   def removeTask(self, task):
     """
     Remove a task from the engine.
-    
+
     @param task:    L{Task} to remove
     """
     found = False
@@ -85,7 +87,7 @@ class Engine:
   def pauseTask(self, task):
     """
     Pause a task.
-    
+
     @param task:  L{Task} to pause
     """
     self.paused.append(task)
@@ -93,11 +95,25 @@ class Engine:
   def resumeTask(self, task):
     """
     Resume a paused task.
-    
+
     @param task:  L{Task} to resume
     """
     self.paused.remove(task)
-    
+
+  def _runTask(self, task, ticks = 0):
+    if not task in self.paused:
+      self.currentTask = task
+      task.run(ticks)
+      self.currentTask = None
+
+
+
+
+
+
+
+#Paragraph responsible for garbage collector:
+
   def enableGarbageCollection(self, enabled):
     """
     Enable or disable garbage collection whenever a random garbage
@@ -108,7 +124,7 @@ class Engine:
       gc.enable()
     else:
       gc.disable()
-      
+
   def collectGarbage(self):
     """
     Run a garbage collection run.
@@ -124,17 +140,25 @@ class Engine:
     """
     self.timer.highPriority = not bool(boost)
 
-  def _runTask(self, task, ticks = 0):
-    if not task in self.paused:
-      self.currentTask = task
-      task.run(ticks)
-      self.currentTask = None
+
+
+
+
+
+#Paragraph responsible for starting and stopping the process:
+
+  def quit(self):
+    for t in list(self.tasks + self.frameTasks):
+      self.removeTask(t)
+    self.running = False
+
+
 
   def run(self):
     """Run one cycle of the task scheduler engine."""
     if not self.frameTasks and not self.tasks:
       return False
-    
+
     for task in self.frameTasks:
       self._runTask(task)
     for ticks in self.timer.advanceFrame():
