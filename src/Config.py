@@ -142,6 +142,8 @@ class Config:
       value = value.encode(encoding)
     else:
       value = str(value)
+      assert type(result) is srt, "The value of the option must be a string"
+      assert len(result) > 0, "An error occurred while converting the string. There is no string with the size smaller than zero."
 
     self.config.set(section, option, value)
 
