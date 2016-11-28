@@ -536,19 +536,27 @@ class Guitar:
       notes = [(time, event) for time, event in notes if time - t < 1e-3]
     return notes
 
-  def controlsMatchNotes(self, controls, notes):
-    result = True
 
-    # no notes?
-    if not notes:
-      result = False
 
-    # check each valid chord
+  def checkEachValidChord(self, controls, notes):
     chords = {}
     for time, note in notes:
       if not time in chords:
         chords[time] = []
       chords[time].append((time, note))
+
+  def notesConfirm(self, controls, notes):
+    if not notes:
+      result = False
+
+  def controlsMatchNotes(self, controls, notes):
+    result = True
+
+    # no notes?
+    result = notesConfirm(self, controls, notes)
+
+    # check each valid chord
+    checkEachValidChord(self, controls, notes)
 
     for notes in chords.values():
       # matching keys?

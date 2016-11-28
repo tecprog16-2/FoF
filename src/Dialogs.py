@@ -409,6 +409,24 @@ class SongChooser(Layer, KeyListener):
   def libraryListLoaded(self, libraries):
     self.engine.resource.load(self, "songs",     lambda: Song.getAvailableSongs(self.engine, self.library), onLoad = self.songListLoaded)
 
+
+  def enumerateSongList(self,songs):
+    for number, item in enumerate(self.items):
+      if isinstance(item, Song.SongInfo) and self.initialItem == item.songName:
+        self.selectedIndex =  number
+        break
+      elif isinstance(item, Song.LibraryInfo) and self.initialItem == item.libraryName:
+        self.selectedIndex =  number
+        break
+
+  def enumerateLabel(self, songs):
+    for number, item in enumerate(self.items):
+      if isinstance(item, Song.LibraryInfo):
+        self.loadItemLabel(number)
+      else:
+        pass
+
+
   def songListLoaded(self, songs):
     if self.songLoader:
       self.songLoader.cancel()
@@ -422,20 +440,10 @@ class SongChooser(Layer, KeyListener):
     self.loaded        = True
     self.searchText    = ""
     if self.initialItem is not None:
-      for i, item in enumerate(self.items):
-        if isinstance(item, Song.SongInfo) and self.initialItem == item.songName:
-          self.selectedIndex =  i
-          break
-        elif isinstance(item, Song.LibraryInfo) and self.initialItem == item.libraryName:
-          self.selectedIndex =  i
-          break
-    # Load labels for libraries right away
-    for i, item in enumerate(self.items):
-      if isinstance(item, Song.LibraryInfo):
-        self.loadItemLabel(i)
-      else:
-        pass
+      enumerateSongsList(self,songs)
 
+    # Load labels for libraries right away
+    enumerateLabel(self,songs)
     self.updateSelection()
 
   def shown(self):

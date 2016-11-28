@@ -417,17 +417,20 @@ A Cerealizer Handler that can support new-style class instances with __slot__.""
     ObjHandler.__init__(self, Class, classname)
     self.Class_slots = Class.__slots__
 
-  def collect(self, obj, dumper):
-    i = id(obj)
-    if not i in dumper.objs_id:
-      dumper.priorities_objs.append((-1, obj))
+  def addIdObjectInDumperObjectsID(obj, dumper):
+    identifcationNumber = id(obj)
+    if not identifcationNumber in dumper.objs_id:
+      dumper.priorities_objs.append((-1,obj))
       dumper.objs_id.add(i)
 
-      if self.Class_getstate: state = self.Class_getstate(obj)
-      else:                   state = dict([(slot, getattr(obj, slot, None)) for slot in self.Class_slots])
-      dumper.obj2state[i] = state
-      dumper.collect(state)
-      return 1
+  def collect(self, obj, dumper):
+
+    addIdObjectInDumperObjectsID(obj, dumper)
+    if self.Class_getstate: state = self.Class_getstate(obj)
+    else:                   state = dict([(slot, getattr(obj, slot, None)) for slot in self.Class_slots])
+    dumper.obj2state[i] = state
+    dumper.collect(state)
+    return 1
 
   def undump_data(self, obj, dumper, s):
     if self.Class_setstate: self.Class_setstate(obj, dumper.undump_ref(s))
@@ -445,14 +448,11 @@ A Cerealizer Handler that can support class instances with __getinitargs__."""
     self.Class_init        = Class.__init__
 
   def collect(self, obj, dumper):
-    i = id(obj)
-    if not i in dumper.objs_id:
-      dumper.priorities_objs.append((-1, obj))
-      dumper.objs_id.add(i)
 
-      dumper.obj2state[i] = state = self.Class_getinitargs(obj)
-      dumper.collect(state)
-      return 1
+    addIdObjectInDumperObjectsID(obj, dumper)
+    dumper.obj2state[i] = state = self.Class_getinitargs(obj)
+    dumper.collect(state)
+    return 1
 
   def undump_data(self, obj, dumper, s): self.Class_init(obj, *dumper.undump_ref(s))
 
