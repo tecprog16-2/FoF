@@ -99,6 +99,9 @@ class FullScreenSwitcher(KeyListener):
       return True
 
   def keyReleased(self, key):
+      """
+      This following paragraph test if the key was unpressed by the player
+      """
     if key == pygame.K_LALT:
       self.altStatus = False
 
