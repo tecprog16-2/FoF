@@ -48,6 +48,7 @@ def ToFloat(val):
 
 # Convert a string to a int if the value exists
 def ToInt(val):
+        # Check if the variable val ir None or empty
 	if val is None or val == '':
 		return None
 	else:
