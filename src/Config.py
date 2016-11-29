@@ -31,6 +31,15 @@ config    = None
 prototype = {}
 
 class Option:
+
+def load(fileName = None, setAsDefault = False):
+  """Load a configuration with the default prototype"""
+  global config
+  c = Config(prototype, fileName)
+  if setAsDefault and not config:
+    config = c
+  return c
+
   """A prototype configuration key."""
   def __init__(self, **args):
     for key, value in args.items():
@@ -56,14 +65,6 @@ def define(section = None, option = None, type = None, default = None, text = No
     options = [True, False]
 
   prototype[section][option] = Option(type = type, default = default, text = text, options = options)
-
-def load(fileName = None, setAsDefault = False):
-  """Load a configuration with the default prototype"""
-  global config
-  c = Config(prototype, fileName)
-  if setAsDefault and not config:
-    config = c
-  return c
 
 class Config:
   """A configuration registry."""
