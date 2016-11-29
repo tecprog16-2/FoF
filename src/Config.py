@@ -35,10 +35,10 @@ class Option:
 def load(fileName = None, setAsDefault = False):
   """Load a configuration with the default prototype"""
   global config
-  c = Config(prototype, fileName)
+  newconfig = Config(prototype, fileName)
   if setAsDefault and not config:
-    config = c
-  return c
+    config = newconfig
+  return newconfig
 
   """A prototype configuration key."""
   def __init__(self, **args):
