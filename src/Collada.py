@@ -86,6 +86,7 @@ def ToFloat2(stringValue, errorText=''):
 		print 'Error: ' + errorText
 		raise
 
+# Convert a string to a list e.g '1.0 2.0 3.0 ...' -> [1.0, 2.0, 3.0, ...]
 def ToList(var):
 	result = []
 	if var is None:
