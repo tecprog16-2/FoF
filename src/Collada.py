@@ -47,14 +47,14 @@ def ToFloat(val):
 		return float(val)
 
 # Convert a string to a int if the value exists
-def ToInt(val):
+def ToInt(value):
         # Check if the variable val ir None or empty
-	if val is None or val == '':
+	if value is None or value == '':
 		return None
 	else:
-		value = int(val)
-		assert type(value) is int, "The value after convertion to integer must be a integer number."
-		return value
+		returnValue = int(value)
+		assert type(returnValue) is int, "The value after convertion to integer must be a integer number."
+		return returnValue
 
 
 # Convert a string to a list of 3 floats e.g '1.0 2.0 3.0' -> [1.0, 2.0, 3.0]
