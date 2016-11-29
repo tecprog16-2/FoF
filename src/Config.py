@@ -25,6 +25,7 @@ import Log
 import Resource
 import os
 
+# Variable to set up the encoding pattern to ISO
 encoding  = "iso-8859-1"
 config    = None
 prototype = {}

@@ -182,6 +182,7 @@ class Font:
     glEnableClientState(GL_VERTEX_ARRAY)
     glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
+    # Scale will be multiplied between local scale and instance scale
     scale *= self.scale
 
     if self.reversed:

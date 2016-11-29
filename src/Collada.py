@@ -30,7 +30,9 @@ ROUND = 5
 
 #---Functions----
 
+# Constant PI
 numberPi = 3.1415926
+# Constante for convertion angle
 angleForConvertion = 180
 
 angleToRadian = numberPi / angleForConvertion
@@ -38,7 +40,7 @@ radianToAngle = angleForConvertion / numberPi
 
 # Convert a string to a float if the value exists
 def ToFloat(val):
-
+        # Check if the variable val ir None or empty
 	if val is None or val == '':
 		return None
 	else:

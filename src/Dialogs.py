@@ -77,6 +77,7 @@ def wrapText(font = None, positionText = None, text = None, rightMargin = 0.9, s
     else:
       pass
 
+    # Compare if the work is a break line
     if word == "\n":
       continue
     else:
