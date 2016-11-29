@@ -133,6 +133,7 @@ class GameEngine(Engine):
 
     self.config  = config
 
+    # Get the fps in the game
     fps          = self.config.get("video", "fps")
     tickrate     = self.config.get("engine", "tickrate")
     Engine.__init__(self, fps = fps, tickrate = tickrate)
