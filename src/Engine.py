@@ -150,8 +150,8 @@ class Engine:
   """
   def quit(self):
     # Make an loop while all task actived
-    for t in list(self.tasks + self.frameTasks):
-      self.removeTask(t)
+    for task in list(self.tasks + self.frameTasks):
+      self.removeTask(task)
     self.running = False
 
 
