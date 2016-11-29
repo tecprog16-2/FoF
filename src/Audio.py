@@ -76,6 +76,16 @@ if "pyglet" in sys.modules:
         ch.play()
 
   class Music(object):
+
+    def play(self, loops = -1, pos = 0.0):
+      self.player.queue(self.source)
+      self.player.seek(pos)
+      if loops > 0:
+        self.player.eos_action = pyglet.media.Player.EOS_LOOP
+      else:
+        self.player.eos_action = pyglet.media.Player.EOS_PAUSE
+      self.player.play()
+
     def __init__(self, fileName):
       try:
         type(fileName) is None
@@ -89,15 +99,6 @@ if "pyglet" in sys.modules:
     def setEndEvent(event):
       # TODO
       pass
-
-    def play(self, loops = -1, pos = 0.0):
-      self.player.queue(self.source)
-      self.player.seek(pos)
-      if loops > 0:
-        self.player.eos_action = pyglet.media.Player.EOS_LOOP
-      else:
-        self.player.eos_action = pyglet.media.Player.EOS_PAUSE
-      self.player.play()
 
     def stop(self):
       self.player.pause()
