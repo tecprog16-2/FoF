@@ -149,6 +149,7 @@ def AddVec3( vector1, vector2 ):
 	vector1.y += vector2.y
 	vector1.z += vector2.z
 
+# Convert a string to a matrix of 4x4 elements
 def ToMatrix4( matrixElement ):
 
 	assert matrixElement != None, "The matrixElement in the ToMatrix4 method in the Collada.py cannot be negative"
