@@ -221,6 +221,9 @@ class Font:
 
 
   def _allocateGlyphTexture(self):
+    """
+    This method will make an allocation from texture based in the Glyph params
+    """
     t = TextureAtlas(size = glGetInteger(GL_MAX_TEXTURE_SIZE))
     t.texture.setFilter(GL_LINEAR, GL_LINEAR)
     t.texture.setRepeat(GL_CLAMP, GL_CLAMP)
