@@ -149,6 +149,7 @@ class Engine:
   Paragraph responsible to start and quit the game
   """
   def quit(self):
+    # Make an loop while all task actived
     for t in list(self.tasks + self.frameTasks):
       self.removeTask(t)
     self.running = False
