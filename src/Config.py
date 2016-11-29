@@ -78,6 +78,7 @@ class Config:
     self.config = ConfigParser()
 
     if fileName:
+      # Assegure that the path will contain the os path file name
       if not os.path.isfile(fileName):
         path = Resource.getWritableResourcePath()
         fileName = os.path.join(path, fileName)
