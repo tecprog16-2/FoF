@@ -145,8 +145,9 @@ class Engine:
 
 
 
-#Paragraph responsible for starting and stopping the process:
-
+  """
+  Paragraph responsible to start and quit the game
+  """
   def quit(self):
     for t in list(self.tasks + self.frameTasks):
       self.removeTask(t)
