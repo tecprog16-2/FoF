@@ -112,6 +112,8 @@ def ToFloatList(var):
 			result.append(float(i))
 	return result
 
+
+# Convert a string to a list of integers e.g '1 2 3 ...' -> [1, 2, 3, ...]
 def ToIntList(lst):
 	result = []
 	if lst is None:
