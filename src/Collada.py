@@ -30,7 +30,9 @@ ROUND = 5
 
 #---Functions----
 
+# Constant PI
 numberPi = 3.1415926
+# Constante for convertion angle
 angleForConvertion = 180
 
 angleToRadian = numberPi / angleForConvertion
