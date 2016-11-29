@@ -72,8 +72,8 @@ class Engine:
     """
     found = False
     queues = self._getTaskQueues(task)
-    for q in queues:
-      q.remove(task)
+    for queue in queues:
+      queue.remove(task)
     if queues:
       task.stopped()
 
