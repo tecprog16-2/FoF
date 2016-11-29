@@ -56,9 +56,6 @@ class Text(Element):
     self.scale     = scale
     self.size      = self.font.getStringSize(self.text, scale = scale)
 
-  def getHeight(self):
-    return self.size[1]
-
   def render(self, offset):
 
     """
@@ -73,6 +70,9 @@ class Text(Element):
       x = .5 - self.size[0] / 2
     glColor4f(*self.color)
     self.font.render(self.text, (x, offset), scale = self.scale)
+
+  def getHeight(self):
+    return self.size[1]
 
 class Picture(Element):
   def __init__(self, engine, fileName, height):
